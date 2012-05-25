@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VariablesViewState
+   version = "1.0">
+   <ContextStates>
+      <ContextState
+         contextName = "-[ABHSAPHandler prepCall]:ABHSAPHandler.m">
+      </ContextState>
+      <ContextState
+         contextName = "-[CSLoctionHandlerViewController initCustomersFromResponse:]:CSLoctionHandlerViewController.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "customerNumbers">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "-[CSLoctionHandlerViewController getResponseWithString:]:CSLoctionHandlerViewController.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "customerNumbers">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "-[CSLoginViewController loginToSAPWithUserName:andPassword:]:CSLoginViewController.m">
+      </ContextState>
+      <ContextState
+         contextName = "-[CSLoctionHandlerViewController mapView:annotationView:calloutAccessoryControlTapped:]:CSLoctionHandlerViewController.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "view">
+            </PersistentString>
+            <PersistentString
+               value = "[view annotation]">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+   </ContextStates>
+</VariablesViewState>
