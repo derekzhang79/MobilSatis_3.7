@@ -14,6 +14,8 @@
 #import "CSNewCoordinateLocationViewController.h"
 #import "CSVisitDetailViewController.h"
 #import "CSEquipmentViewController.h"
+#import "CSCityList.h"
+
 @interface CSCustomerDetailViewController : CSBaseViewController<MKMapViewDelegate, UIAlertViewDelegate,UITableViewDelegate,UITableViewDataSource,UIPickerViewDelegate>  {
         BOOL canEditCustomer;
     CSCustomer *myCustomer;
@@ -32,8 +34,6 @@
     UITextField *street;
     UITextField *neighbour;
     UITextField *district;
-    UITextField *state;
-    UITextField *borough;
     UITextField *doorNumber;
     UITextField *postalCode;
     UITextField *telNumber;
@@ -50,7 +50,12 @@
     UIPickerView *customerPosition;
     UIPickerView *locationGroup;
     UIPickerView *efesContract;
-    
+    UIPickerView *cityPickerList;
+    UIPickerView *countyList;
+    BOOL isCityResponse;
+    CSCityList *cityList;
+    int cityRowPicked;
+    int countyRowPicked;
 }
 @property (nonatomic,retain) CSCustomer *myCustomer;
 @property (nonatomic,retain) UILabel *name1Label;
@@ -65,8 +70,6 @@
 @property (nonatomic, retain) UITextField *mainStreet;
 @property (nonatomic, retain) UITextField *street;
 @property (nonatomic, retain) UITextField *neighbour;
-@property (nonatomic, retain) UITextField *state;
-@property (nonatomic, retain) UITextField *borough;
 @property (nonatomic, retain) UITextField *district;
 @property (nonatomic, retain) UITextField *certificateOffice;
 @property (nonatomic, retain) UITextField *certificateNumber;
@@ -77,6 +80,13 @@
 @property (nonatomic, retain) UIPickerView *customerPosition;
 @property (nonatomic, retain) UIPickerView *locationGroup;
 @property (nonatomic, retain) UIPickerView *efesContract;
+@property BOOL isCityResponse;
+@property (nonatomic, retain) CSCityList *cityList;
+@property (nonatomic, retain) UIPickerView *cityPickerList;
+@property (nonatomic, retain) UIPickerView *countyList;
+@property int cityRowPicked;
+@property int countyRowPicked;
+
 
 - (id)initWithUser:(CSUser *)myUser andCustomer:(CSCustomer*)aCustomer;
 - (IBAction)makeKeyboardGoAway;

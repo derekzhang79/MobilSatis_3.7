@@ -11,7 +11,6 @@
 #import "CSCustomerDetailViewController.h"
 
 
-
 @implementation CSCustomerDetailViewController
 @synthesize myCustomer;
 @synthesize segmentedControl;
@@ -22,8 +21,6 @@
 @synthesize cashRegister;
 @synthesize openm2;
 @synthesize closedm2;
-@synthesize borough;
-@synthesize state;
 @synthesize street;
 @synthesize mainStreet;
 @synthesize neighbour;
@@ -34,8 +31,12 @@
 @synthesize taxNumber;
 @synthesize taxOffice;
 @synthesize sesGroup;
-
-
+@synthesize isCityResponse;
+@synthesize cityList;
+@synthesize cityPickerList;
+@synthesize countyList;
+@synthesize cityRowPicked;
+@synthesize countyRowPicked;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -51,6 +52,7 @@
     isFieldsEditable = NO;
     return self;
 }
+
 - (IBAction)makeKeyboardGoAway{
     //buraya tum editable fieldler gelcek -ata.
     [adressTextView resignFirstResponder];
@@ -62,7 +64,24 @@
     [metreSquare resignFirstResponder];
     [closedm2 resignFirstResponder];
     [cashRegister resignFirstResponder];
+    [mainStreet resignFirstResponder];
+    [street resignFirstResponder];
+    [doorNumber resignFirstResponder];
+    [neighbour resignFirstResponder];
+    [postalCode resignFirstResponder];
+    [district resignFirstResponder];
+    [telNumber resignFirstResponder];
+    [taxOffice resignFirstResponder];
+    [taxNumber resignFirstResponder];
+    [certificateOffice resignFirstResponder];
+    [certificateNumber resignFirstResponder];
+    [metreSquare resignFirstResponder];
+    [cashRegister resignFirstResponder];
+    [openm2 resignFirstResponder];
+    [closedm2 resignFirstResponder];
+
 }
+
 - (IBAction)editFields:(id)sender{
     if (![self checkCustomerInScope:myCustomer]) {
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Uyarı" message:@"Müşteri için yetkiniz yoktur." delegate:nil cancelButtonTitle:@"Tamam" otherButtonTitles: nil];
@@ -162,19 +181,16 @@
         UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Uyarı"
 
                                                          message:@"Müşteri Anaverilerini güncelliyorsunuz. Emin misiniz?"
-                                          delegate:self
+                                            delegate:self
                                                cancelButtonTitle:@"İptal"
                                                otherButtonTitles:@"Evet", nil];
         alert.tag = 1;
         [alert show];
     }
     
-    
-    
 }
+
 - (void)toggleFields:(BOOL)toggle {
-    
-    
     
     [segmentedControl setEnabled:toggle];
     [mainStreet setEnabled:toggle];
@@ -183,8 +199,6 @@
     [doorNumber setEnabled:toggle];
     [postalCode setEnabled:toggle];
     [neighbour setEnabled:toggle];
-    [borough setEnabled:toggle];
-    [state setEnabled:toggle];
     [telNumber setEnabled:toggle];
     [certificateNumber setEnabled:toggle];
     [certificateOffice setEnabled:toggle];
@@ -195,9 +209,6 @@
     [closedm2 setEnabled:toggle];
     [district setEnabled:toggle];
     [cashRegister setEnabled:toggle];
-    
-    
-    
 }
 
 
@@ -207,16 +218,14 @@
 
 - (void)saveAllInformation {
     
-    
-    
     customerDetail.status = [segmentedControl titleForSegmentAtIndex:[segmentedControl selectedSegmentIndex]];
     customerDetail.mainStreet = mainStreet.text;
     customerDetail.street = street.text;
     customerDetail.doorNumber = doorNumber.text;
     customerDetail.postalCode = postalCode.text;
     customerDetail.neighbourhood = neighbour.text;
-    customerDetail.borough = borough.text;
-    customerDetail.state = state.text;
+    //customerDetail.borough = borough.text;
+    //customerDetail.state = state.text;
     customerDetail.telf1 = telNumber.text;
     customerDetail.certificateNumber = certificateNumber.text;
     customerDetail.certificateOffice = certificateOffice.text;
@@ -246,9 +255,7 @@
 
 
 - (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component {
-    
-    
-    
+
     switch ([pickerView tag]) {
         case 1:
             return 2;
@@ -265,12 +272,16 @@
         case 5:
             return 2;
             break;
+        case 6:
+            return [cityList.cityList count];
+            break;
+        case 7:
+            NSLog(@"City Count %i",[[[cityList.cityList objectAtIndex:cityRowPicked] objectAtIndex:1] count]);
+            return [[[cityList.cityList objectAtIndex:cityRowPicked] objectAtIndex:1] count];
+            break;
         default:
             break;
-    }
-    
-    
-    
+    }  
     return 0;
 }
 
@@ -285,9 +296,7 @@
 
 // tell the picker the title for a given component
 - (NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component {
-    
-    
-    
+
     switch ([pickerView tag]) {
         case 1:
             return [NSString stringWithFormat:@"%@ %i",@"ses",row];
@@ -304,12 +313,16 @@
         case 5:
             return [NSString stringWithFormat:@"%@ %i",@"efes",row];
             break;
+        case 6:
+            return [[cityList.cityList objectAtIndex:row] objectAtIndex:0];
+            break;
+        case 7:
+            return [[[cityList.cityList objectAtIndex:cityRowPicked] objectAtIndex:1] objectAtIndex:row];
+            break;
         default:
             break;
     }
-    
-    
-    
+
     return @"";
 }
 
@@ -320,9 +333,7 @@
 
 // tell the picker the width of each row for a given component
 - (CGFloat)pickerView:(UIPickerView *)pickerView widthForComponent:(NSInteger)component {
-    
-    
-    
+
     return 300;
 }
 
@@ -348,6 +359,15 @@
         case 5:
             [thePickerView removeFromSuperview];
             break;
+        case 6:
+            cityRowPicked = row;
+            [countyList reloadAllComponents];
+            [thePickerView removeFromSuperview];
+            break;
+        case 7:
+            countyRowPicked = row;
+            [thePickerView removeFromSuperview];
+            break;
         default:
             break;
     }
@@ -366,11 +386,10 @@
     NSLog(@"%@",myResponse);
     
     [self initCustomerDetails:myResponse];
-    
-    
-    
+
     canEditCustomer = [self checkCustomerInScope:myCustomer];
 }
+
 - (void)initCustomerDetails:(NSString*)aResponse{
     customerDetail = [[CSCustomerDetail alloc] init];
     [customerDetail setSaleManager:[[ABHXMLHelper getValuesWithTag:@"SATMD" fromEnvelope:aResponse] objectAtIndex:0]];
@@ -647,13 +666,9 @@
         {
             cell.textLabel.text = @"İlçe";
             cell.selectionStyle = UITableViewCellSelectionStyleNone;
-            
-            
-            
-            borough.text = customerDetail.borough;
-            
-            borough.delegate = self;
-            cell.accessoryView = borough;
+
+            cell.detailTextLabel.text = customerDetail.borough;
+        
             
             return cell;
         }
@@ -665,10 +680,8 @@
             cell.textLabel.text = @"İl";
             cell.selectionStyle = UITableViewCellSelectionStyleNone;
             
-            state.text = customerDetail.state;
+            cell.detailTextLabel.text = customerDetail.state;
             
-            state.delegate = self;
-            cell.accessoryView = state;
             
             return cell;
         }
@@ -916,6 +929,12 @@
     }
     if (isFieldsEditable == YES) {
         switch (row) {
+            case 16:
+                [self.view addSubview:countyList];
+                break;
+            case 17:
+                [self.view addSubview:cityPickerList];
+                break;
             case 22:
                 [self.view addSubview:sesGroup];
                 break;
@@ -936,16 +955,6 @@
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
 
 
 - (BOOL)checkCustomerInScope:(CSCustomer*)aCustomer{
@@ -976,6 +985,11 @@
     //[activityIndicator startAnimating];
     [super playAnimationOnView:self.view];
 }
+
+
+
+
+
 #pragma mark - View lifecycle
 
 
@@ -990,6 +1004,15 @@
     [name1Label setTextColor:[CSApplicationProperties getUsualTextColor]];
     [kunnrLabel setText:myCustomer.kunnr];
     [kunnrLabel setTextColor:[CSApplicationProperties getUsualTextColor]];
+    
+    cityList = [CSCityList getCityList];
+    
+    if ([cityList.cityList count] < 1) {
+        [cityList allocateMethods];
+    }
+    
+    cityRowPicked = 1;
+    
     tableView.backgroundColor = [UIColor clearColor];
     tableView.opaque = YES;
     tableView.backgroundView = nil;
@@ -1013,8 +1036,6 @@
     neighbour = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, 120, 21)];
     postalCode = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, 120, 21)];
     district = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, 120, 21)];
-    borough = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, 120, 21)];
-    state = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, 120, 21)];
     telNumber = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, 120, 21)];
     taxOffice = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, 120, 21)];
     taxNumber = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, 120, 21)];
@@ -1060,6 +1081,15 @@
     locationGroup.delegate = self;
     locationGroup.showsSelectionIndicator = YES;
     
+    cityPickerList = [[UIPickerView alloc]initWithFrame:CGRectMake(0, 240, 320, 200)];
+    cityPickerList.tag = 6;
+    cityPickerList.delegate = self;
+    cityPickerList.showsSelectionIndicator = YES;
+    
+    countyList = [[UIPickerView alloc]initWithFrame:CGRectMake(0, 240, 320, 200)];
+    countyList.tag = 7;
+    countyList.delegate = self;
+    countyList.showsSelectionIndicator = YES;
     
     
     [self toggleFields:NO];
@@ -1072,6 +1102,7 @@
 
 - (void)viewWillAppear:(BOOL)animated{
     [self disabelEditOnLoad];
+        [[[self tabBarController] navigationItem] setTitle:@"Müşterim"];
     UIBarButtonItem *nextButton = [[UIBarButtonItem alloc] initWithTitle:@"Ziyaret Girişi" style:UIBarButtonItemStyleBordered target:self action:@selector(checkIn)];
     [[self navigationItem] setRightBarButtonItem:nextButton];
 }
