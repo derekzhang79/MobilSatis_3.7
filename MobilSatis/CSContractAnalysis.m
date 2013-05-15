@@ -24,4 +24,5 @@
 @synthesize brutIncome, transferedCost;
 @synthesize grossIncome, grossPercentageWithOTV;
 @synthesize grossPercentageWithoutOTV, grossProceeds, pointToPoint;
+@synthesize analysisCriteria, estimatedTargetLitre;
 @end

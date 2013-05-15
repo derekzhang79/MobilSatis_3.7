@@ -47,8 +47,13 @@
 
  [[cell textLabel] setText:tempCooler.description];
     [[cell detailTextLabel] setText:tempCooler.sernr];
-    [cell setTextColor:[CSApplicationProperties getUsualTextColor]];
-    [cell setAccessoryType:UITableViewCellAccessoryDisclosureIndicator];
+    
+    cell.contentView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"RowStyle-20.png"]];
+    
+    
+    cell.imageView.image = [UIImage imageNamed:@"appiconlar-09.png"];
+    //[cell setTextColor:[CSApplicationProperties getUsualTextColor]];
+    cell.textLabel.textColor = [UIColor whiteColor];
     return cell;
 }
 

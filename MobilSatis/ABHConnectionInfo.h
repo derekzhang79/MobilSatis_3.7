@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 
 @interface ABHConnectionInfo : NSObject{
-
+    
     
     
 }
@@ -40,5 +40,12 @@
 +(NSString*) getBWUserId;
 +(NSString*) getBWPassword;
 
++(NSString*) getPanaromaUsername;
++(NSString*) getPanaromaPassword;
++(NSString*) getPanaromaWorkYear;
++(NSString*) getPanaromaCompanyCode;
++(NSString*) getPanaromaDistrubutionCode;
 
++(void) setHostName:(NSString*)newHostName;
++(void) setSystemNumeber:(NSString*)newSystemNumber;
 @end

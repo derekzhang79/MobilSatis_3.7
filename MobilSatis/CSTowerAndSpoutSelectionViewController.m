@@ -9,6 +9,12 @@
 #import "CSTowerAndSpoutSelectionViewController.h"
 
 @implementation CSTowerAndSpoutSelectionViewController
+@synthesize coolerViewController;
+@synthesize selectedCooler;
+@synthesize selectedTowerIndex, selectedSpoutIndex, towerAmount, spoutAmount;
+@synthesize customer;
+@synthesize towers;
+@synthesize spouts;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -44,70 +50,29 @@
 }
 #pragma mark - Custom code
 -(IBAction)sendInstallationToSap{
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Kurulum Belgesi" 
-                                                    message:[NSString stringWithFormat:@"%@ sogutucusu için kurulum belgesi yaratılıyor.",selectedCooler.description]
-                                                   delegate:self 
-                          
-                                          cancelButtonTitle:@"İptal" 
-                                          otherButtonTitles:@"Onayla", nil];
-    [alert show];
     
+    coolerViewController = [[CSCoolerCreationViewController alloc] init];
+    
+    coolerViewController.towerViewController = [[CSTowerAndSpoutSelectionViewController alloc] init];
+    coolerViewController.towerViewController = self;
+    
+    [self.navigationController  pushViewController:coolerViewController animated:YES];
     
 }
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
-    if ([super isAnimationRunning]) {
-        return;
-    }
-    
-    if (buttonIndex == 1) {
-        [super playAnimationOnView:self.view];
-        CSTower *selectedTower = [towers objectAtIndex:selectedTowerIndex];
-        ABHSAPHandler *sapHandler = [[ABHSAPHandler alloc] initWithConnectionUrl:[ABHConnectionInfo getConnectionUrl]];
-        [sapHandler setDelegate:self];
-        [sapHandler prepRFCWithHostName:[ABHConnectionInfo  getHostName] andClient:[ABHConnectionInfo getClient] andDestination:[ABHConnectionInfo getDestination] andSystemNumber:[ABHConnectionInfo getSystemNumber] andUserId:[ABHConnectionInfo getUserId] andPassword:[ABHConnectionInfo getPassword] andRFCName:@"ZMOB_CREATE_ACTIVITY_BY_SALES"];
-        [sapHandler addImportWithKey:@"IP_TYPE" andValue:@"KURULUM"];
-        [sapHandler addImportWithKey:@"IP_CUSTOMER" andValue:customer.kunnr];
-        [sapHandler addImportWithKey:@"SOGUTUCU" andValue:selectedCooler.matnr];
-        [sapHandler addImportWithKey:@"KULE" andValue:selectedTower.matnr];
-        [sapHandler addImportWithKey:@"KULE_MIKTAR" andValue:[NSString stringWithFormat:@"%i",towerAmount ]];
-        [sapHandler  addImportWithKey:@"MUSLUK_MIKTAR" andValue:[NSString stringWithFormat:@"%i",spoutAmount ]];
-        [sapHandler addImportWithKey:@"KURULUM_TIPI" andValue:selectedCooler.type];
-        [sapHandler addImportWithKey:@"USERNAME" andValue:user.username];
-        [sapHandler prepCall];
 
-
-    }
-}
--(void)getResponseWithString:(NSString*)myResponse{
-    [super stopAnimationOnView];
-    NSString *setupNumber =  [[ABHXMLHelper getValuesWithTag:@"OBJECT_ID" fromEnvelope:myResponse] objectAtIndex:0];
-    UIAlertView *alert;
-    if(![setupNumber isEqualToString:@""]){
-        
-        
-            alert = [[UIAlertView alloc] initWithTitle:@"Başarılı" 
-                                               message:[NSString stringWithFormat:@"%@ numaralı kurulum belgesi başarıyla yaratıldı.",setupNumber]
-                                              delegate:nil
-                     
-                                     cancelButtonTitle:@"Tamam" 
-                                     otherButtonTitles:nil, nil];
-        [alert show];
-        [[self navigationController] popViewControllerAnimated:YES];
-    }else{
-            alert = [[UIAlertView alloc] initWithTitle:@"Hatalı" 
-                                               message:[NSString stringWithFormat:@"Kurulum belgesi yaratılamadı. Lütfen tekrar deneyiniz."]
-                                              delegate:nil 
-                     
-                                     cancelButtonTitle:@"Tamam" 
-                                     otherButtonTitles:nil, nil];  
-        [alert show];
-    }
-}
 #pragma mark - Delegate methods
 - (CGFloat)pickerView:(UIPickerView *)pickerView widthForComponent:(NSInteger)component
 {
     if (component == 0) {
-        return 260;
+        if([UIDevice currentDevice].userInterfaceIdiom==UIUserInterfaceIdiomPad) {
+            
+            return 650;
+        } 
+        
+        else{
+            return 260;
+        }
+        
     }else{
         return 50;    
     }
@@ -186,7 +151,13 @@
     //pickerView.showsSelectionIndicator = NO;
     // Do any additional setup after loading the view from its nib.
     towerPicker = [[UIPickerView alloc] init];
-    towerPicker.frame = 	CGRectMake(0, 0, 320, 180);
+    
+    if([UIDevice currentDevice].userInterfaceIdiom==UIUserInterfaceIdiomPad) {
+      towerPicker.frame = 	CGRectMake(0, 100, 800, 180);   
+    } 
+    else{
+       towerPicker.frame = 	CGRectMake(0, 0, 320, 180);
+    }
     [towerPicker setDelegate:self];
     [towerPicker setDataSource:self];
     [towerPicker setShowsSelectionIndicator:YES];
@@ -194,7 +165,13 @@
     [[self view] addSubview:towerPicker];
     
     spoutPicker = [[UIPickerView alloc] init];
-    spoutPicker.frame = 	CGRectMake(0, 200, 320, 180);
+    
+    if([UIDevice currentDevice].userInterfaceIdiom==UIUserInterfaceIdiomPad) {
+        spoutPicker.frame = 	CGRectMake(0, 400, 800, 180);   
+    } 
+    else{
+        spoutPicker.frame = 	CGRectMake(0, 200, 320, 180);
+    }
     [spoutPicker setDelegate:self];
     [spoutPicker setDataSource:self];
     [spoutPicker setShowsSelectionIndicator:YES];

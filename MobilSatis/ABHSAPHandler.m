@@ -9,7 +9,8 @@
 #import "ABHSAPHandler.h"
 #import "ABHXMLHelper.h"
 @implementation ABHSAPHandler
-@synthesize delegate;
+@synthesize delegate, RFCNameLine;
+
 -(id)init{
     self = [super self];
     header = [NSString stringWithFormat:@"<soapenv:Envelope "
@@ -33,7 +34,10 @@
     connectionUrl = [NSString stringWithFormat:myUrl];
     return self;
 }
--(void)prepRFCWithHostName:(NSString*)hostName andClient:(NSString*)client andDestination:(NSString*)destination andSystemNumber:(NSString*)systemNumber andUserId:(NSString*)userId andPassword:(NSString*)password andRFCName:(NSString*)RFCName{
+
+-(void)prepRFCWithHostName:(NSString*)hostName andClient:(NSString*)client andDestination:(NSString*)destination andSystemNumber:(NSString*)systemNumber andUserId:(NSString*)userId andPassword:(NSString*)password andRFCName:(NSString*)RFCName {
+    
+    
     hostNameLine = [NSString stringWithFormat:@"%@%@%@",@"<hostName xsi:type=\"xsd:string\">",hostName,@"</hostName>"];
     clientLine = [NSString stringWithFormat:@"%@%@%@",@"<client xsi:type=\"xsd:string\">",client,@"</client>"];
     destinationLine = [NSString stringWithFormat:@"%@%@%@",@"<destination xsi:type=\"xsd:string\">",destination,@"</destination>"];
@@ -101,6 +105,13 @@
 }
 
 -(void)prepCall{
+    
+    if ([CoreDataHandler isInternetConnectionNotAvailable]) {
+        NSLog(@"Internet yoh");
+        [delegate getResponseWithString:@"" andSender:self];
+        return;
+    }
+    
     [self prepImportWithImports:imports];
     [self prepTableWithTables:tables];
     soapMsg = [NSString stringWithFormat:@"%@%@",header,config];
@@ -120,7 +131,7 @@
      [soapReq addValue:msgLength forHTTPHeaderField:@"Content-Length"];
      [soapReq setHTTPMethod:@"POST"];
     //for viewing message that goes in connection -alp
-     NSLog(@"%@",soapMsg);
+     //NSLog(@"%@",soapMsg);
      [soapReq setHTTPBody:[soapMsg dataUsingEncoding:NSUTF8StringEncoding]];
      NSURLConnection *conn = [[NSURLConnection alloc] initWithRequest:soapReq delegate:self];
      
@@ -129,9 +140,9 @@
 }
 
 //delegation methods
-- (void)connection:(NSURLConnection *)connection didReceiveAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge{
-    NSLog(@"lookin for credentials... there is authentication you know probably proxy");
-}
+//- (void)connection:(NSURLConnection *)connection didReceiveAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge{
+//    NSLog(@"lookin for credentials... there is authentication you know probably proxy");
+//}
 
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response{
    // NSLog(@"Something Recieved!Beware!");
@@ -145,7 +156,8 @@
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection{
     NSString *response = [[NSString alloc] initWithBytes:[webData mutableBytes] length:[webData length] encoding:NSUTF8StringEncoding];
     response = [NSString stringWithFormat:@"%@",[ABHXMLHelper htmlToText:response]];
-    [delegate getResponseWithString:response];
+    //NSLog(@"ALPPPPP----->>>>>%@",response);
+    [delegate getResponseWithString:response andSender:self];
 
 }
 

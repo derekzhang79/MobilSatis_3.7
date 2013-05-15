@@ -15,4 +15,5 @@
 @synthesize manufacturerTax, estimatedSale, estimatedMontlySale;
 @synthesize discountPercent, discountID, matnr;
 @synthesize weightUnit, iktas, iserk, isert, isnas, pknas;
+@synthesize contractDescription;
 @end

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VariablesViewState
+   version = "1.0">
+   <ContextStates>
+      <ContextState
+         contextName = "-[CSCustomerDetailViewController sendDataOfCustomerToPanoramaWithCustomer:]:CSCustomerDetailViewController.m">
+      </ContextState>
+      <ContextState
+         contextName = "-[CSCityList getResponseWithString:andSender:]:CSCityList.m">
+      </ContextState>
+      <ContextState
+         contextName = "-[CSUserSalesViewController addUserSaleDataToCoreData]:CSUserSalesViewController.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "-[CSConnectWithOtherMYKViewController initOtherMYKListFromEnvelope:]:CSConnectWithOtherMYKViewController.m">
+      </ContextState>
+      <ContextState
+         contextName = "-[CSPanoramaHandler prepCall]:CSPanoramaHandler.m">
+      </ContextState>
+      <ContextState
+         contextName = "-[CSPanoramaHandler connectionDidFinishLoading:]:CSPanoramaHandler.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "(NSString*)0x21f5844">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "-[CSConnectWithOtherMYKViewController modifyArrayContents:]:CSConnectWithOtherMYKViewController.m">
+      </ContextState>
+   </ContextStates>
+</VariablesViewState>

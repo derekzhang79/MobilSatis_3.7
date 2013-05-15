@@ -16,10 +16,13 @@
     CSCustomer *customer;
     CSDraggableMapPoint *newMapPoint;
     IBOutlet MKMapView *mapView;
-    
+    int flag;
+    BOOL newCoor;
 }
+@property int flag;
+@property BOOL newCoor;
 
 - (id)initWithUser:(CSUser *)myUser andCustomer:(CSCustomer*)selectedCustomer;
 - (void)zoomToMapPoint:(CSMapPoint*)point;
-- (void)sendCoordinatesToSap;
+- (void)sendCoordinatesToGeovision;
 @end

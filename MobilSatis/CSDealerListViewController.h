@@ -14,8 +14,12 @@
 @interface CSDealerListViewController : CSBaseViewController<UITableViewDataSource,UITableViewDataSource,ABHSAPHandlerDelegate>{
     IBOutlet UITableView *tableView;
     IBOutlet UILabel *welcomeLabel;
-    
+    IBOutlet UIImage *image;
+    BOOL isNewDealerOrCustomerAvailable;
 }
+
+@property (nonatomic, retain) UIImage *image;
+
 - (void)getDealersFromSap;
 - (void)initDealerFromResponse:(NSString*)response;
 - (void)initCustomerFromResponse:(NSString*)response;

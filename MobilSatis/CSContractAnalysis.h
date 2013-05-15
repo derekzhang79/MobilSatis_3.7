@@ -21,6 +21,7 @@
     NSString *analysisEndingDate;
     NSString *contractStartingDate;
     NSString *contractEndingDate;
+    NSString *analysisCriteria;
     
     NSString *lastYearSystemSale;
     NSString *estimatedAnalysisSale;
@@ -44,6 +45,7 @@
     NSString *grossProceeds;
     NSString *grossPercentageWithoutOTV;
     NSString *grossPercentageWithOTV;
+    NSString *estimatedTargetLitre;
    }
 
 @property (nonatomic, retain) NSString *kunnr;
@@ -56,6 +58,7 @@
 @property (nonatomic, retain) NSString *analysisEndingDate;
 @property (nonatomic, retain) NSString *contractStartingDate;
 @property (nonatomic, retain) NSString *contractEndingDate;
+@property (nonatomic, retain) NSString *analysisCriteria;
 
 @property (nonatomic, retain) NSString *lastYearSystemSale;
 @property (nonatomic, retain) NSString *estimatedAnalysisSale;
@@ -79,6 +82,7 @@
 @property (nonatomic, retain) NSString *grossProceeds;
 @property (nonatomic, retain) NSString *grossPercentageWithoutOTV;
 @property (nonatomic, retain) NSString *grossPercentageWithOTV;
+@property (nonatomic, retain) NSString *estimatedTargetLitre;
 
 
 

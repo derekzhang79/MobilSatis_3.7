@@ -10,7 +10,7 @@
 
 
 @implementation CSMapPoint
-@synthesize coordinate, title;
+@synthesize coordinate, title,pngName,tablePngName;
 
 - (id)initWithCoordinate:(CLLocationCoordinate2D)c title:(NSString *)t
 {

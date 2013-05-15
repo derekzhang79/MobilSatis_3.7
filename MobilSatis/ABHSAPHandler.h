@@ -37,6 +37,8 @@
     
 }
 @property (nonatomic,retain)id<ABHSAPHandlerDelegate>delegate;
+@property (nonatomic, retain) NSString *RFCNameLine;
+
 -(id)initWithConnectionUrl:(NSString*)myUrl;
 -(void)prepRFCWithHostName:(NSString*)hostName andClient:(NSString*)client andDestination:(NSString*)destination andSystemNumber:(NSString*)systemNumber andUserId:(NSString*)userId andPassword:(NSString*)password andRFCName:(NSString*)RFCName;
 -(void)addImportWithKey:(NSString*) key andValue:(NSString*)value;
@@ -48,6 +50,7 @@
 //r3 ztssu4 rapor 8124
 @end
 @protocol ABHSAPHandlerDelegate
--(void)getResponseWithString:(NSString*)myResponse;
+-(void)getResponseWithString:(NSString*)myResponse andSender:(ABHSAPHandler*)me;
+
 
 @end

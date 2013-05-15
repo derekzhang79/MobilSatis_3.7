@@ -9,17 +9,6 @@
 #import "CSUser.h"
 
 @implementation CSUser
-@synthesize username,name,password,customers,surname,dealers,mail,location;
+@synthesize username,name,password,customers,surname,dealers,mail,location, sapUser, javaPassword;
 
-- (void)encodeWithCoder:(NSCoder *)encoder{
-	[encoder encodeObject:username  forKey:@"username"];
-
-	
-}
-
-- (id)initWithCoder:(NSCoder *)decoder{
-	//self = [super init];
-	[self setUsername:[decoder decodeObjectForKey:@"username"]];
-	return self;
-}
 @end

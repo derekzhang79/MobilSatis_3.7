@@ -34,7 +34,7 @@ NSMutableArray *spouts;
     [sapHandler prepCall];
     
 }
-+(void)getResponseWithString:(NSString *)myResponse{
++(void)getResponseWithString:(NSString *)myResponse andSender:(ABHSAPHandler *)me {
     towers = [[NSMutableArray alloc] init];
     spouts = [[NSMutableArray alloc] init];
     NSMutableArray *coolerIds =  [ABHXMLHelper getValuesWithTag:@"URUNID" fromEnvelope:myResponse];

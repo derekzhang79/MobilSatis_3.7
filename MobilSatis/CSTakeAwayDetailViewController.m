@@ -25,7 +25,7 @@
     return self;
 }
 
--(IBAction)sendTakeAwayToSap:(id)sender{
+- (IBAction)sendTakeAwayToSap:(id)sender{
     if (![self checkFailureDescription] || [super isAnimationRunning]) {
         return;
     }
@@ -39,7 +39,7 @@
 }
 
 
--(BOOL)checkFailureDescription{
+- (BOOL)checkFailureDescription{
     if ([textView.text isEqualToString:@""] || isStandartText) {
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Hata" 
                                                         message:[NSString stringWithFormat:@"Sökme nedeni girilmesi zorunludur!"]
@@ -62,7 +62,7 @@
     }
 }
 
--(IBAction)ignoreKeyboard{
+- (IBAction)ignoreKeyboard{
     
     [self.textView resignFirstResponder];
     //   [self resignFirstResponder   ];
@@ -83,7 +83,7 @@
         [sapHandler prepCall];
     }
 }
--(void)getResponseWithString:(NSString *)myResponse{
+-(void)getResponseWithString:(NSString *)myResponse andSender:(ABHSAPHandler *)me{
     [super stopAnimationOnView];
     NSString *takeAwayOrderNumber = [[NSString alloc] init];
     
@@ -126,7 +126,7 @@
     isStandartText = YES;
     // Do any additional setup after loading the view from its nib.
     [textView clearsContextBeforeDrawing];
-    [textView setText:[NSString stringWithFormat:@"%@müşterisindeki soğutucu barkodu ve açıklaması giriniz.",customer.name1]];
+    [textView setText:[NSString stringWithFormat:@"%@ müşterisindeki soğutucu barkodu ve açıklaması giriniz.",customer.name1]];
     [textView setTextColor:[UIColor blueColor]];
     // [textView setText:[NSString stringWithFormat:@"%@ barkodlu %@ soğutucusu için arıza nedeni giriniz.",cooler.sernr,cooler.description]];
     [[self navigationItem] setTitle:@"Sökme Nedeni"];

@@ -7,8 +7,11 @@
 //
 
 #import "CSNewCoordinateLocationViewController.h"
+#import "CSGeovisionHandler.h"
 
 @implementation CSNewCoordinateLocationViewController
+@synthesize flag;
+@synthesize newCoor;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -34,17 +37,24 @@
 }
 -(MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id <MKAnnotation>)annotation
 {
-    MKPinAnnotationView *annotationView = nil;
-    annotationView = (MKPinAnnotationView*)[mapView dequeueReusableAnnotationViewWithIdentifier:@"AssignPin"];
+    MKAnnotationView *annotationView = nil;
+    annotationView = (MKAnnotationView*)[mapView dequeueReusableAnnotationViewWithIdentifier:@"AssignPin"];
     if (annotationView == nil) {
-        annotationView = [[MKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:@"AssignPin"];
+        annotationView = [[MKAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:@"AssignPin"];
+    }
+    if ([annotation.title isEqualToString:@"Current Location"] || [annotation.title isEqualToString:@"Ben"]) {
+        
+        
+        
+        return  nil;
     }
     
     //    UIButton *infoButton = [UIButton buttonWithType:UIButtonTypeDetailDisclosure];
     //    annotationView.rightCalloutAccessoryView = infoButton;
     annotationView.canShowCallout = YES;
     annotationView.draggable = YES;
-    
+    [annotationView setImage:[UIImage imageNamed:[self getAnnotationPngNameFromCustomer:customer]]];
+
     NSLog(@"%@",annotation.title);
     if ([annotation.title isEqualToString:@"Yeni Koordinat"] ) {
         annotationView.draggable = YES;
@@ -54,10 +64,68 @@
     
     return annotationView;
 }
+
+
+- (NSString*) getAnnotationPngNameFromCustomer:(CSCustomer*)activeCustomer{
+    if ([activeCustomer.other isEqualToString:@"03"]) {
+        return @"greenCustomerIconSmall.png";
+    }
+    if ([activeCustomer.relationship isEqualToString:@"04"] || [activeCustomer.relationship isEqualToString:@"05"]) {
+        if ([activeCustomer.hasPlan isEqualToString:@"X"]) {
+            return @"sariEv.png";
+        }else{
+            if (newCoor == YES) {
+                return @"turkazEv.png";
+            }
+            return @"maviEvIcon.png";
+        }
+    }
+    if ([activeCustomer.type isEqualToString:@"acik"]) {
+        if ([activeCustomer.hasPlan isEqualToString:@"X"]) {
+            return@"iconYellowOpen.png";
+        }
+        else{
+            if (newCoor == YES) {
+                return @"maviAcik.png";
+            }
+            return @"beerIcon.png";
+        }
+    }
+    else if ([activeCustomer.type isEqualToString:@"kapali"]) {
+        if ([activeCustomer.hasPlan isEqualToString:@"X"]) {
+            return @"iconYellowClosed.png";
+        }
+        else{
+            if (newCoor == YES) {
+                return @"turkuazKapali.png";
+            }
+            return @"iconKapali.png";
+        }
+    }
+    else if ([activeCustomer.type isEqualToString:@"bira"]) {
+        if ([activeCustomer.hasPlan isEqualToString:@"X"]) {
+            return @"iconYellowBeer.png";
+        }
+        else{
+            return @"iconBira.png";
+            if (newCoor == YES) {
+                return @"turkuazBira.png";
+            }
+        }
+    }else if ([activeCustomer.type isEqualToString:@"ekomini"]) {
+        if ([activeCustomer.hasPlan isEqualToString:@"X"]) {
+            return @"ekominiKucukSari.png";
+        }
+        else{
+            return @"ekominiKucukMavi";
+        }
+    }
+
+}
+
 #pragma mark - Map Delegates
 - (void)mapView:(MKMapView *)mapView annotationView:(MKAnnotationView *)annotationView didChangeDragState:(MKAnnotationViewDragState)newState fromOldState:(MKAnnotationViewDragState)oldState 
 {
-    NSLog(@"hopspadlaöda");
     
     
     //..Whatever you want to happen when the dragging starts or stops
@@ -74,6 +142,8 @@
     if (gestureRecognizer.state != UIGestureRecognizerStateBegan || newMapPoint != nil)
         return;
     
+    newCoor = YES;
+    
     CGPoint touchPoint = [gestureRecognizer locationInView:self->mapView];   
     CLLocationCoordinate2D touchMapCoordinate = 
     [self->mapView convertPoint:touchPoint toCoordinateFromView:self->mapView];
@@ -84,7 +154,7 @@
 }
 
 
-- (void)sendCoordinatesToSap{
+- (void)sendCoordinatesToGeovision{
     if (newMapPoint == nil) {
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Hata" message:@"Yeni Koordinat belirtiniz." delegate:nil cancelButtonTitle:@"Tamam" otherButtonTitles: nil];
         [alert show];
@@ -96,35 +166,84 @@
                           
                                           cancelButtonTitle:@"İptal" 
                                           otherButtonTitles:@"Onayla", nil];
+    [alert setTag:1];
     [alert show];
 }
+
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
-    if (buttonIndex == 1) {
-        if ([super isAnimationRunning]) {
-            return;
-        }
-        ABHSAPHandler *sapHandler = [[ABHSAPHandler alloc] initWithConnectionUrl:[ABHConnectionInfo getConnectionUrl]];
-        [sapHandler setDelegate:self];
-        [sapHandler prepRFCWithHostName:[ABHConnectionInfo  getHostName] andClient:[ABHConnectionInfo getClient] andDestination:[ABHConnectionInfo getDestination] andSystemNumber:[ABHConnectionInfo getSystemNumber] andUserId:[ABHConnectionInfo getUserId] andPassword:[ABHConnectionInfo getPassword] andRFCName:@"ZMOB_KOORDINAT_DEGISTIR"];
-                    [sapHandler addImportWithKey:@"I_KUNNR" andValue:[customer kunnr]];
-        [sapHandler addImportWithKey:@"I_EKOOR_X" andValue:[NSString stringWithFormat:@"%f",customer.locationCoordinate.coordinate.latitude]];
-        [sapHandler addImportWithKey:@"I_EKOOR_Y" andValue:[NSString stringWithFormat:@"%f",customer.locationCoordinate.coordinate.longitude]];
-        [sapHandler addImportWithKey:@"I_YKOOR_X" andValue:[NSString stringWithFormat:@"%f",newMapPoint.coordinate.latitude]];
-        [sapHandler addImportWithKey:@"I_YKOOR_Y" andValue:[NSString stringWithFormat:@"%f",newMapPoint.coordinate.longitude]];
-        [sapHandler addImportWithKey:@"I_UNAME" andValue:user.username];
-        
-                    [sapHandler prepCall];
-        //            
-        //            [super playAnimationOnView:self.view];
-        
-        
-        
+    switch ([alertView tag]) {
+        case 1:
+            if (buttonIndex == 1) {
+                if ([super isAnimationRunning]) {
+                    return;
+                }
+                
+                NSString *urlString = [NSString stringWithFormat:@"http://92.45.120.118:8082/EfesWS/EfesWS?"
+                                       "un=efes.abh&ps=3f3sAbhC00rTo6vg&object={"
+                                       "\"deneme\":{\"IPHONE_X\":\"44\",\"IPHONE_Y\":\"44\",\"MUSTERI_KODU"
+                                       "\":\"0001323475\",\"PANORAMA_X\":\"30\",\"PANORAMA_Y\":\"30\",\"USERID\":\"alpkeseriPhone2\"}}"];
+                
+                urlString =[urlString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+                NSURL *url = [NSURL URLWithString:urlString];
+                NSURLRequest *request = [NSURLRequest requestWithURL:url];
+                NSError *errorReturned = nil;
+                
+                NSString *result = [CSGeovisionHandler sendCoordinatesToGeovisionFromUser:user andCustomer:customer andOldLocation:[[customer locationCoordinate] coordinate] andNewLocation:[newMapPoint coordinate] andText:@" "];
+                
+                if (![result isEqualToString:@"Done."])
+                {
+                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Koordinat Güncelleme"
+                                                                    message:@"Hata oluştu"
+                                                                   delegate:self
+                                          
+                                                          cancelButtonTitle:@"Tamam"
+                                                          otherButtonTitles:nil];
+                    [alert setTag:2];
+                    [alert show];
+                    
+                }
+                else
+                {
+                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Koordinat Güncelleme"
+                                                                    message:@"İşlem tamamlandı"
+                                                                   delegate:self
+                                          
+                                                          cancelButtonTitle:@"Tamam"
+                                                          otherButtonTitles:nil];
+                    [alert setTag:2];
+                    [alert show];
+
+                }
+                
+            }
+            break;
+        case 2:
+            [self.navigationController popViewControllerAnimated:YES];
+            break;
+            
+        default:
+            break;
     }
-    //        
+    
 }
--(void)getResponseWithString:(NSString *)myResponse{
-    NSLog(@"%@",myResponse);
-}
+                                                           
+- (double)getDistanceFromOldPointY:(double)old_lat andOldPointX:(double)old_lon andNewPointY:(double) new_lat andNewPointX:(double) new_lon{
+    const int R =     6371;    
+    double dLat = (new_lat - old_lat) * (M_PI/180);
+    double dLon = (new_lon - old_lon) * (M_PI/180);
+    old_lat = old_lat * (M_PI/180);
+    new_lat = new_lat * (M_PI/180);
+    double a = pow(sin(new_lat - old_lat), 2) + cos(new_lat)*cos(old_lat)*pow(sin(new_lon - old_lon), 2);
+                                                               
+    a= pow(sin(dLat/2), 2) + cos(old_lat)*cos(new_lat)*pow(sin(dLon/2), 2);
+                                                               
+    double b = 2 * a * pow(tan(2*(sqrt(a)-sqrt(1 - a))), 2);
+    b = 2*atan2(sqrt(a),sqrt((1-a)));
+    double c = R * b;
+                                                               
+                                                               
+    return c*1000;
+}                                                           
 
 #pragma mark - View lifecycle
 
@@ -145,7 +264,7 @@
 
 - (void)viewWillAppear:(BOOL)animated{
     [[self  navigationItem] setTitle:@"Yeni Koordinat"];
-    UIBarButtonItem *nextButton = [[UIBarButtonItem alloc] initWithTitle:@"Güncelle" style:UIBarButtonItemStyleBordered target:self action:@selector(sendCoordinatesToSap)];
+    UIBarButtonItem *nextButton = [[UIBarButtonItem alloc] initWithTitle:@"Güncelle" style:UIBarButtonItemStyleBordered target:self action:@selector(sendCoordinatesToGeovision)];
     [[self navigationItem] setRightBarButtonItem:nextButton];
 }
 

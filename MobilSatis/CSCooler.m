@@ -9,7 +9,8 @@
 #import "CSCooler.h"
 
 @implementation CSCooler
-@synthesize sernr,description,status,matnr,type;
+@synthesize sernr,description,status,matnr,quantity,barcodeFailed;
+@synthesize stockTaking,type;
 
 
 -(void)dealloc{

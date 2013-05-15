@@ -7,6 +7,7 @@
 //
 
 #import "CSRegisterUserViewController.h"
+#import "FileHelpers.h"
 
 @implementation CSRegisterUserViewController
 
@@ -27,53 +28,110 @@
     // Release any cached data, images, etc that aren't in use.
 }
 
-- (IBAction)makeKeyboardGoAway{
-    [mailField resignFirstResponder];
+- (IBAction)makeKeyboardGoAway {
+    [mykUserField resignFirstResponder];
+    [mykPasswordField resignFirstResponder];
+    [sapUserField resignFirstResponder];
+    [sapPasswordField resignFirstResponder];
 }
 
--(IBAction)saveMail:(id)sender{
+- (void)keyboardWillBeHidden:(NSNotification*)aNotification
+{
+    [scrollView setScrollEnabled:YES];
+    CGPoint scrollPoint = CGPointMake(0.0, 0.0);
+    [scrollView setContentOffset:scrollPoint animated:YES];
+}
+
+- (void)textFieldDidBeginEditing:(UITextField *)textField
+{
+    activeField = textField;
+}
+
+- (void)textFieldDidEndEditing:(UITextField *)textField
+{
+    activeField = nil;
+}
+
+- (void)keyboardWasShown:(NSNotification*)aNotification
+{
+    
+    NSDictionary* info = [aNotification userInfo];
+    
+    CGSize kbSize = [[info objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
+    
+    UIEdgeInsets contentInsets = UIEdgeInsetsMake(0.0, 0.0, kbSize.height, 0.0);
+    scrollView.contentInset = contentInsets;
+    scrollView.scrollIndicatorInsets = contentInsets;
+    
+    CGPoint scrollPoint = CGPointMake(0.0, activeField.frame.origin.y - 35);
+    [scrollView setContentOffset:scrollPoint animated:YES];
+    [scrollView setScrollEnabled:NO];
+    //   }
+}
+
+
+-(IBAction)saveMail:(id)sender {
+    
     if ([super isAnimationRunning]) {
         return;
     }
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Kayit İşlemi" 
-                                                    message:[NSString stringWithFormat:@"%@ %@ mail adresinizi %@ olarak girdiniz. Onaylıyor musunuz?",user.name, user.surname,mailField.text]
-                                                   delegate:self 
-                            
-                                          cancelButtonTitle:@"İptal" 
-                                          otherButtonTitles:@"Onayla", nil];
-    [alert show];
-}
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
-    if (buttonIndex == 1) {
-        [user setMail:[NSString stringWithFormat:mailField.text]];
-        [self updateUserInSap];
+    
+    if ([[mykUserField text] isEqualToString:@""] || [[mykPasswordField text] isEqualToString:@""] || [[sapUserField text] isEqualToString:@""] || [[sapPasswordField text] isEqualToString:@""]) {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Hata" message:@"Lütfen bütün bilgileri doldurun" delegate:self cancelButtonTitle:@"Tamam" otherButtonTitles:nil];
+        [alert show];
+    }
+    else
+    {
+        [self sendUserDataToSAP:sender];
     }
 }
 
--(void)updateUserInSap{
+-(void)sendUserDataToSAP:(id)sender {
     ABHSAPHandler *sapHandler = [[ABHSAPHandler alloc] initWithConnectionUrl:[ABHConnectionInfo getConnectionUrl]];
     [sapHandler setDelegate:self];
     [sapHandler prepRFCWithHostName:[ABHConnectionInfo  getHostName] andClient:[ABHConnectionInfo getClient] andDestination:[ABHConnectionInfo getDestination] andSystemNumber:[ABHConnectionInfo getSystemNumber] andUserId:[ABHConnectionInfo getUserId] andPassword:[ABHConnectionInfo getPassword] andRFCName:@"ZMOB_SAT_TEM_UPDATE"];
-    [sapHandler addImportWithKey:@"UNAME" andValue:user.username];
-    [sapHandler addImportWithKey:@"MAIL" andValue:user.mail];
+    
+    [sapHandler addImportWithKey:@"MYK" andValue:[mykUserField text]];
+    [sapHandler addImportWithKey:@"PASSWORD" andValue:[mykPasswordField text]];
+    [sapHandler addImportWithKey:@"SAPUSER" andValue:[[sapUserField text] uppercaseString]];
+    [sapHandler addImportWithKey:@"SAPPASSWORD" andValue:[sapPasswordField text]];
     [sapHandler addImportWithKey:@"DEVICE" andValue:@"IOS"];
+    
     [sapHandler prepCall];
     [super playAnimationOnView:self.view];
 }
--(void)getResponseWithString:(NSString *)myResponse{
+
+
+-(void)getResponseWithString:(NSString *)myResponse andSender:(ABHSAPHandler *)me {
     [super stopAnimationOnView];
     NSMutableArray *responses = [ABHXMLHelper getValuesWithTag:@"STATUS" fromEnvelope:myResponse];
-    if ([[responses objectAtIndex:0 ] isEqualToString: @"T"]) {    
-       UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Kayıt Tamamlandı" 
+    if ([[responses objectAtIndex:0 ] isEqualToString: @"T"]) {
+        
+        [[self user] setSapUser:[sapUserField text]];
+        [[NSUserDefaults standardUserDefaults] setObject:[mykUserField text] forKey:@"username"];
+        [[NSUserDefaults standardUserDefaults] setObject:[sapUserField text] forKey:@"sapUser"];
+
+        
+       UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Kayıt Tamamlandı"
                                            message:[NSString stringWithFormat:@"Kayıt işlemi başarılı.Tekrar giriş yapınız."]
                                           delegate:nil 
                  
                                  cancelButtonTitle:@"Tamam" 
                                  otherButtonTitles:nil,
                  nil];
-            [alert show];
+        [alert show];
     }
-
+    else
+    {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Hata"
+                                                        message:@"Kayıt sırasında hata alındı."
+                                                       delegate:nil
+                              
+                                              cancelButtonTitle:@"Tamam"
+                                              otherButtonTitles:nil,
+                              nil];
+        [alert show];
+    }
     [[self navigationController] popViewControllerAnimated:YES];
 }
 
@@ -83,8 +141,19 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
-    [welcomeLabel setText:[NSString stringWithFormat:@"Hosgeldiniz, %@ %@",[user name], [user surname]]];
-//        [activityIndicator setHidesWhenStopped:YES];
+    [welcomeLabel setText:@"Hoşgeldiniz, "];
+    [activeField setDelegate:self];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardWasShown:)
+                                                 name:UIKeyboardDidShowNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardWillBeHidden:)
+                                                 name:UIKeyboardWillHideNotification object:nil];
+    [[self navigationItem] setTitle:@"Oturum Açma"];
+    
+    [mykPasswordField setSecureTextEntry:YES];
+    [sapPasswordField setSecureTextEntry:YES];
+    [mykUserField setText:[user username]];
 }
 
 - (void)viewDidUnload

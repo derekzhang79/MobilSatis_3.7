@@ -7,10 +7,15 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "CSReportProblemViewController.h"
+#import "CoreDataHandler.h"
 
-@interface CSInfoViewController : UIViewController{
+@interface CSInfoViewController : CSBaseViewController{
     IBOutlet UITextView *mail;
     IBOutlet UITextView *phone;
+    IBOutlet UISwitch   *coreDataSwitch;
 }
 
+- (IBAction)reportProblem:(id)sender;
+- (IBAction)coreDataSwitchChanged:(id)sender;
 @end

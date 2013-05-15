@@ -51,12 +51,13 @@
     CSConfirmation *tempConfirmation = [confirmations objectAtIndex:[indexPath row]];
     [[cell detailTextLabel] setText:[tempConfirmation confirmationNumber]];
     [[cell textLabel] setText:[[tempConfirmation customer] name1]];
-    [[cell textLabel] setTextColor:[UIColor colorWithRed:0.187f green:0.152f blue:0.26f alpha:1.0f]];
     //    [[cell detailTextLabel] setHighlighted:YES];
-    
-    [cell setBackgroundColor:[UIColor colorWithRed:0.255f green:0.246f blue:0.176f alpha:1]];
-    [cell setAccessoryType:UITableViewCellAccessoryDisclosureIndicator];
-     cell.imageView.image = [UIImage imageNamed:@"teyit_kalem.png"];
+    cell.detailTextLabel.textColor = [UIColor whiteColor];
+     cell.contentView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"RowStyle-20.png"]];
+     
+     //[cell setTextColor:[CSApplicationProperties getUsualTextColor]];
+     cell.textLabel.textColor = [UIColor whiteColor];
+     cell.imageView.image = [UIImage imageNamed:@"appiconlar-08.png"];
     return cell;
 }
 
@@ -99,7 +100,7 @@
     [super viewWillAppear:YES];
     UIBarButtonItem *nextButton = [[UIBarButtonItem alloc] initWithTitle:@"Yenile" style:UIBarButtonItemStyleBordered target:self action:@selector(refreshConfirmations)];
     [[[self tabBarController ]navigationItem] setRightBarButtonItem:nextButton];
-        [[[self tabBarController ]navigationItem] setTitle:@"Teyit Seçimi"];
+        [[self navigationItem] setTitle:@"Teyit Seçimi"];
     [myTableView reloadData];
 }
 
@@ -126,7 +127,7 @@
     [sapHandler prepCall];
     
 }
--(void)getResponseWithString:(NSString *)myResponse{
+-(void)getResponseWithString:(NSString *)myResponse andSender:(ABHSAPHandler *)me{
     [super stopAnimationOnView];
     NSMutableArray *confirmationNumbers =  [ABHXMLHelper getValuesWithTag:@"CONFNUMBER" fromEnvelope:myResponse];
     NSMutableArray *customerNames =  [ABHXMLHelper getValuesWithTag:@"NAME1" fromEnvelope:myResponse];

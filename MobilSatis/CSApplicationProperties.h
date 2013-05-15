@@ -11,4 +11,6 @@
 @interface CSApplicationProperties : NSObject
 +(NSString*)getVersionOfApplication;
 +(UIColor*)getUsualTextColor;
++ (UIColor*)getEfesBlueColor;
+
 @end

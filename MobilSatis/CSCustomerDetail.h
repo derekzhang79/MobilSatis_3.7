@@ -22,8 +22,11 @@
     NSString *neighbourhood;
     NSString *postalCode;
     NSString *distrinct; //semt
+    NSString *distrinctCode;
     NSString *borough; //ilçe
+    NSString *boroughCode;
     NSString *state; //il
+    NSString *stateCode;
     NSString *telf1;
     NSString *taxOffice;
     NSString *taxNumber;
@@ -70,8 +73,9 @@
 @property(nonatomic,retain)NSString *cashRegister;
 @property(nonatomic,retain)NSString *openM2;
 @property(nonatomic,retain)NSString *closeM2;
-
-
+@property(nonatomic,retain)NSString *distrinctCode;
+@property(nonatomic,retain)NSString *boroughCode;
+@property(nonatomic,retain)NSString *stateCode;
 
 
 @end

@@ -70,7 +70,7 @@
 }
 
 
--(void)getResponseWithString:(NSString *)myResponse{
+-(void)getResponseWithString:(NSString *)myResponse andSender:(ABHSAPHandler *)me{
     
     [super stopAnimationOnView];
     NSMutableArray *responses = [ABHXMLHelper getValuesWithTag:@"STATUS" fromEnvelope:myResponse];
@@ -109,10 +109,10 @@
 {
     [super viewDidLoad];
     usernameTextField.text = user.username;
-    [usernameLabelField setTextColor:[CSApplicationProperties getUsualTextColor]];
-    [oldPasswordLabelField setTextColor:[CSApplicationProperties getUsualTextColor]];
-    [newPasswordLabelField setTextColor:[CSApplicationProperties getUsualTextColor]];
-    [newPasswordLabelField2 setTextColor:[CSApplicationProperties getUsualTextColor]];
+    //[usernameLabelField setTextColor:[CSApplicationProperties getUsualTextColor]];
+    //[oldPasswordLabelField setTextColor:[CSApplicationProperties getUsualTextColor]];
+    //[newPasswordLabelField setTextColor:[CSApplicationProperties getUsualTextColor]];
+    //[newPasswordLabelField2 setTextColor:[CSApplicationProperties getUsualTextColor]];
     [[self navigationItem] setRightBarButtonItem:[[UIBarButtonItem alloc] initWithTitle:@"Değiştir" style:UIBarButtonSystemItemAction target:self action:@selector(changePasswordFromSap)]];
     [[self navigationItem] setTitle:@"Şifre Değiştir"];
     // Do any additional setup asfter loading the view from its nib.

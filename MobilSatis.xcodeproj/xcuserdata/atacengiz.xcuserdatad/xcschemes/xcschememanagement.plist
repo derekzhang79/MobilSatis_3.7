@@ -4,6 +4,11 @@
 <dict>
 	<key>SchemeUserState</key>
 	<dict>
+		<key>MobilSatis copy.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>4</integer>
+		</dict>
 		<key>MobilSatis.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
@@ -18,6 +23,11 @@
 			<true/>
 		</dict>
 		<key>3C69B15A147919FE00D10FFD</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>E1D72ABF15BD6E4400F50053</key>
 		<dict>
 			<key>primary</key>
 			<true/>

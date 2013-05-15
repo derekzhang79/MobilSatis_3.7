@@ -36,13 +36,16 @@
     htmlString = [htmlString stringByReplacingOccurrencesOfString:@"&#xE7;" withString:@"ç"];
     htmlString = [htmlString stringByReplacingOccurrencesOfString:@"&#x11F;" withString:@"ğ"];
     htmlString = [htmlString stringByReplacingOccurrencesOfString:@"&#x15F;" withString:@"ş"];
-    htmlString = [htmlString stringByReplacingOccurrencesOfString:@"&#xF6;" withString:@"Ö"];
-    htmlString = [htmlString stringByReplacingOccurrencesOfString:@"&#xFC;" withString:@"Ü"];
+    htmlString = [htmlString stringByReplacingOccurrencesOfString:@"&#xF6;" withString:@"ö"];
+    htmlString = [htmlString stringByReplacingOccurrencesOfString:@"&#xFC;" withString:@"ü"];
+    htmlString = [htmlString stringByReplacingOccurrencesOfString:@"\\U015e" withString:@"S"];
+    htmlString = [htmlString stringByReplacingOccurrencesOfString:@"\\U0130" withString:@"I"];
     return htmlString;
     
 }
 
 + (NSMutableArray*)getValuesWithTag:(NSString*)aTag fromEnvelope:(NSString*)anEnvelope{
+    anEnvelope = [self htmlToText:anEnvelope];
     NSMutableArray *valueList = [[NSMutableArray alloc] init];
     NSString *openTag = [NSString stringWithFormat:@"<%@>",aTag];
     NSString *closeTag = [NSString stringWithFormat:@"</%@>",aTag];
@@ -70,5 +73,24 @@
         return false;
     }
     return true;
+}
+
++ (NSString*)correctNumberValue:(NSString*)numberValue{
+    NSString *returnValue;
+    NSArray *array = [numberValue componentsSeparatedByString:@"."];
+    @try{
+            returnValue = [array objectAtIndex:0];
+        NSNumberFormatter* numberFormatter = [[NSNumberFormatter alloc] init];
+        [numberFormatter setFormatterBehavior: NSNumberFormatterBehavior10_4];
+        [numberFormatter setNumberStyle: NSNumberFormatterDecimalStyle];
+        returnValue = [numberFormatter stringFromNumber:[numberFormatter numberFromString:returnValue]];
+       // NSLog(@"%@",returnValue);
+    }
+    @catch (NSException *ex) {
+        
+    }
+  //  NSNumberFormatter *temp = [NSNumberFormatter numberFromString:returnValue];
+    return returnValue;
+    
 }
 @end

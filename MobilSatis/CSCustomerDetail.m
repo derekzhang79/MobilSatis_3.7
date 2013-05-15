@@ -9,5 +9,5 @@
 #import "CSCustomerDetail.h"
 
 @implementation CSCustomerDetail
-@synthesize saleManager,saleChief,customerManager,salesRepresentative,marketDeveloper,status,title,mainStreet,street,doorNumber,neighbourhood,postalCode,distrinct,borough,state,telf1,taxOffice,taxNumber,certificateOffice,certificateNumber,customerGroup,sesGroup,customerFeature,customerPosition,locationGroup,efesContract,m2,cashRegister,openM2,closeM2;
+@synthesize saleManager,saleChief,customerManager,salesRepresentative,marketDeveloper,status,title,mainStreet,street,doorNumber,neighbourhood,postalCode,distrinct,borough,state,telf1,taxOffice,taxNumber,certificateOffice,certificateNumber,customerGroup,sesGroup,customerFeature,customerPosition,locationGroup,efesContract,m2,cashRegister,openM2,closeM2, distrinctCode, boroughCode, stateCode;
 @end

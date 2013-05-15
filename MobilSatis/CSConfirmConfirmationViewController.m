@@ -10,6 +10,8 @@
 #import "ABHSAPHandler.h"
 @implementation CSConfirmConfirmationViewController
 @synthesize myConfirmation,delegate;
+@synthesize table;
+
 -(id)init{
     self  = [super init];
     
@@ -39,18 +41,62 @@
 }
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     //    return [recievedDataInArray count];
+    if (tableView.tag == 1) {
+        return 2;
+    }
     return [myConfirmation.items count];
 }
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     //create row
     
-    CSCooler *tempCooler = [[self.myConfirmation items] objectAtIndex:indexPath.row];
-    UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"cell"];
+    CSCooler *tempCooler;
     
+    if (tableView.tag != 1) {
+        tempCooler = [[self.myConfirmation items] objectAtIndex:indexPath.row];
+
+    }
+        
+    UITableViewCell *cell;
+    
+    if (tableView.tag == 1) {
+         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:@"cell"];
+        
+    }
+    else {
+          cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"cell"];
+
+    }
+    int row = [indexPath row];
+    
+    cell.contentView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"RowStyle-20.png"]];
+    
+    //[cell setTextColor:[CSApplicationProperties getUsualTextColor]];
+    cell.textLabel.textColor = [UIColor whiteColor];
+    cell.detailTextLabel.textColor = [UIColor whiteColor];
+    
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    
+    if (tableView.tag == 1) {
+        switch (row) {
+            case 0:
+                cell.textLabel.text = @"Müşteri";    
+
+                cell.detailTextLabel.text = [[myConfirmation customer] name1]; 
+                break;
+            case 1:
+                cell.textLabel.text = @"Teyit Numarası";
+                
+                cell.detailTextLabel.text = myConfirmation.confirmationNumber;
+                break;
+            default:
+                break;
+        }
+            }
+    else {
     [[cell textLabel] setText:[tempCooler description]];
     [[cell detailTextLabel] setText:[tempCooler sernr]];
     //    //    [[cell detailTextLabel] setHighlighted:YES];
-    
+    }
     return cell;
 }
 
@@ -127,7 +173,7 @@
     [sapHandler addImportWithKey:@"STATUS" andValue:@"E0003"];
     [sapHandler prepCall];    
 }
--(void)getResponseWithString:(NSString*)myResponse{
+-(void)getResponseWithString:(NSString*)myResponse andSender:(ABHSAPHandler *)me{
     NSMutableArray *status =  [ABHXMLHelper getValuesWithTag:@"CONFIRMSTATUS" fromEnvelope:myResponse];
     UIAlertView *alert;
     if([[status objectAtIndex:0] isEqualToString:@"T"]){
@@ -190,11 +236,11 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
-    [confirmationNumber setText:[myConfirmation confirmationNumber]];
     myTableView.backgroundColor = [UIColor clearColor];
     myTableView.opaque = NO;
     myTableView.backgroundView = nil;
-    [customerName setText:[[myConfirmation customer] name1]];
+    table.backgroundColor = [UIColor clearColor];
+    table.tag = 1;
 }
 
 - (void)viewDidUnload

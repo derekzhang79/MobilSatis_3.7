@@ -9,10 +9,21 @@
 #import <UIKit/UIKit.h>
 #import "CSBaseViewController.h"
 #import "CSConfirmationListViewController.h"
-@interface CSProfileViewController : CSBaseViewController{
-    
+#import "CSUserSalesViewController.h"
+#import "CSSharePointSafariViewController.h"
+#import "CSEfesPilsenCommercialsViewController.h"
+#import "CSConnectWithOtherMYKViewController.h"
+#import "CSFinancialReportViewController.h"
+
+@interface CSProfileViewController : CSBaseViewController <UITableViewDelegate, UITableViewDataSource, UIAlertViewDelegate, ABHSAPHandlerDelegate> {
+    IBOutlet UILabel *welcomeLabel;
+    IBOutlet UITableView *TableView;
 }
 
-- (IBAction)viewConfirmations:(id)sender;
-- (IBAction)viewSales:(id)sender;
+@property (nonatomic, retain) UITableView *TableView;
+@property (nonatomic, retain) UILabel *welcomeLabel;
+
+- (void)viewConfirmations;
+- (void)viewSales;
+- (void)startUpCompleted;
 @end

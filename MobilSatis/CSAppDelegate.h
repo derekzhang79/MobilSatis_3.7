@@ -7,11 +7,21 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "Reachability.h"
+#import "customNavigationController.h"
 
-@interface CSAppDelegate : UIResponder <UIApplicationDelegate>{
+@interface CSAppDelegate : UIResponder <UIApplicationDelegate> {
     int timestamp;
 }
-
 @property (strong, nonatomic) UIWindow *window;
+
+@property (readonly, strong, nonatomic) NSManagedObjectContext *managedObjectContext;
+@property (readonly, strong, nonatomic) NSManagedObjectModel *managedObjectModel;
+@property (readonly, strong, nonatomic) NSPersistentStoreCoordinator *persistentStoreCoordinator;
+@property (nonatomic, retain) Reachability *internetReach;
+@property (nonatomic, retain) NSString *token;
+
+- (void)saveContext;
+- (NSURL *)applicationDocumentsDirectory;
 
 @end

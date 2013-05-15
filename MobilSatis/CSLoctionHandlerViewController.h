@@ -13,17 +13,24 @@
 #import "CSCustomer.h"
 #import "CSCustomerDetailViewController.h"
 #import "CSAddCustomerCoordinateViewController.h"
+
 //#import "CNMapPoint.h"
-@interface CSLoctionHandlerViewController : CSBaseViewController<CLLocationManagerDelegate,MKMapViewDelegate,UITableViewDataSource,UITableViewDelegate,UINavigationControllerDelegate,UIAccelerometerDelegate,UIScrollViewDelegate>{
+@interface CSLoctionHandlerViewController : CSBaseViewController<CLLocationManagerDelegate,MKMapViewDelegate,UITableViewDataSource,UITableViewDelegate,UINavigationControllerDelegate,UIScrollViewDelegate>{
     IBOutlet MKMapView *mapView;
     CLLocationManager *locationManager;
     IBOutlet UITableView *table;
     CSMapPoint *addCustomerPoint;
-    
+    NSMutableArray *myAnnotations;
     //surec degiskenleri
     NSMutableArray *customers;
-    
+    CSAddCustomerCoordinateViewController *addCustomerCoordinateViewController;
+    int counter;
+    IBOutlet UISwitch *showMyCustomer;
 }
+
+@property (nonatomic, strong) CSAddCustomerCoordinateViewController *addCustomerCoordinateViewController;
+@property (nonatomic, strong) UISwitch *showMyCustomer;
+@property int counter;
 
 - (void)getCustomersFromSapWithLocation:(CSMapPoint*)location;
 - (void)initCustomersFromResponse:(NSString*) myResponse;

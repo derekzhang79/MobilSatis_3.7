@@ -7,7 +7,14 @@
 //
 
 #import "CSBaseViewController.h"
+#import "CSCustomerDetailViewController.h"
 
-@interface CSCancelationInfoViewController : CSBaseViewController
-
+@class CSCustomerDetailViewController;
+@interface CSCancelationInfoViewController : CSBaseViewController <UITableViewDelegate, UITableViewDataSource>
+{
+    CSCustomerDetailViewController *customerViewController;
+    UITableView *table;
+}
+@property (nonatomic, retain) CSCustomerDetailViewController *customerViewController;
+@property (nonatomic, retain) IBOutlet UITableView *table;
 @end

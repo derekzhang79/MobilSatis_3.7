@@ -17,9 +17,9 @@
     NSString *role;    
     NSMutableArray *coolers;
     CSMapPoint  *locationCoordinate;
-    
-    
-    
+    NSString *hasPlan;
+    NSString *type;
+    NSString *other;
 }
 
 @property(nonatomic,retain)NSString *kunnr;
@@ -29,5 +29,8 @@
 @property(nonatomic,retain)NSString *role;    
 @property(nonatomic,retain)NSMutableArray *coolers;
 @property(nonatomic,retain)CSMapPoint *locationCoordinate;
+@property(nonatomic,retain)NSString *hasPlan;
+@property(nonatomic,retain)NSString *type;
+@property(nonatomic,retain)NSString *other;
 
 @end

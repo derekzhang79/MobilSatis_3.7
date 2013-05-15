@@ -15,6 +15,8 @@
 #import "CSTakeAwayDetailViewController.h"
 @implementation CSProcessSelectionViewController
 @synthesize customer,processType;
+@synthesize tableView;
+
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -24,7 +26,7 @@
     return self;
 }
 
--(id)init{
+-(id)init {
     self = [super init];
     customer = [[CSCustomer alloc] init];
     user = [[CSUser alloc] init];
@@ -45,8 +47,6 @@
     return self;
 }
 
-
-
 -(IBAction)sendInstallation:(id)sender{
     if ([super isAnimationRunning]) {
         return;
@@ -63,7 +63,6 @@
     
 }
 
-
 -(IBAction)takeAwayCooler:(id)sender{
     if(    [super isAnimationRunning]){
         return;
@@ -79,10 +78,8 @@
     //                                          cancelButtonTitle:@"İptal" 
     //                                          otherButtonTitles:@"Onayla", nil];
     //    [alert show];
-    
-    
-    
 }
+
 -(void)getCoolersFromSap{
     NSString *tableName = [NSString stringWithFormat:@"COOLERS"];
     NSMutableArray *columns = [[NSMutableArray alloc] init];
@@ -95,12 +92,9 @@
     [sapHandler addImportWithKey:@"CUSTOMER" andValue:self.customer.kunnr];
     [ sapHandler addTableWithName:tableName andColumns:columns];
     [sapHandler prepCall];
-    
 }
 
-
-
--(IBAction)reportFailure:(id)sender{
+- (IBAction)reportFailure:(id)sender{
     if ([super  isAnimationRunning]) {
         return;
     }
@@ -110,16 +104,13 @@
     }
     selectedProcess = [NSString stringWithFormat:@"failure"];
     [self getCoolersFromSap];
-    
-    
-    
 }
--(void)sendTakeAwayOrderToSap{
-    
+
+- (void)sendTakeAwayOrderToSap{
     
 }
 
--(void)getResponseWithString:(NSString *)myResponse{
+-(void)getResponseWithString:(NSString *)myResponse andSender:(ABHSAPHandler *)me{
     [super stopAnimationOnView];
     if ([ABHXMLHelper hasThisTag:@"ZMOB_TEYIT_ITM_STR" fromfromEnvelope:myResponse]) {
         NSMutableArray *coolers = [[NSMutableArray alloc] init];    
@@ -192,17 +183,95 @@
     }
 }
 
+- (void)getToCustomerDetailViewController {
+    CSCustomerDetailViewController *cust;
+    
+    if ([[[self customer] type] isEqualToString:@"dealer"])
+        cust = [[CSCustomerDetailViewController alloc] initWithUser:[self user] andCustomer:[self customer] isDealer:YES];
+    else
+        cust = [[CSCustomerDetailViewController alloc] initWithUser:[self user] andCustomer:[self customer] isDealer:NO];
+    
+    [[self navigationController] pushViewController:cust animated:YES];
+}
 
--(BOOL)checkCustomerForProcess:(NSString*)selectedProcess{
+
+-(BOOL)checkCustomerForProcess:(NSString*)selectedProcess {
     
     return YES;
 }
+
 - (void)didReceiveMemoryWarning
 {
     // Releases the view if it doesn't have a superview.
     [super didReceiveMemoryWarning];
     
     // Release any cached data, images, etc that aren't in use.
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return 75.0;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
+    return 4;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+
+    UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:@"cell"];
+
+    int row = [indexPath row];
+    
+    cell.textLabel.textColor = [UIColor whiteColor];
+    cell.textLabel.backgroundColor = [UIColor clearColor];    
+    cell.contentView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"RowStyle-20.png"]];
+
+    switch (row) {
+        case 0:
+            cell.textLabel.text = @"Kurulum";
+            cell.imageView.image = [UIImage imageNamed:@"ApproveSmallIcon.png"];
+            break;
+        case 1:
+            cell.textLabel.text = @"Arıza";
+            cell.imageView.image = [UIImage imageNamed:@"WarningSmallIcon.png"];
+            break;
+        case 2:
+            cell.textLabel.text = @"Sökme";
+            cell.imageView.image = [UIImage imageNamed:@"CancelSmallIcon.png"];
+            break;
+        case 3:
+            cell.textLabel.text = @"Müşteri Anaverisi";
+            cell.imageView.image = [UIImage imageNamed:@"profilim.png"];
+            break;
+        default:
+            break;
+    }
+    
+    return cell;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    
+    int row = [indexPath row];
+    
+    switch (row) {
+        case 0:
+            [self sendInstallation:@""];
+            break;
+        case 1:
+            [self reportFailure:@""];
+            break;
+        case 2:
+            [self takeAwayCooler:@""];
+            break;
+        case 3:
+            [self getToCustomerDetailViewController];
+            break;
+        default:
+            break;
+    }
+    
 }
 #pragma mark - Delegation Methods
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
@@ -211,16 +280,22 @@
         [self sendTakeAwayOrderToSap];
     }
 }
+
 #pragma mark - View lifecycle
 - (void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:YES];
     [[self navigationItem] setTitle:@"Yapılacak İşlem"];
+
 }
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
     //  [activityIndicator setHidesWhenStopped:YES];
+    tableView.backgroundColor =  [UIColor clearColor];
+    tableView.opaque = NO;
+    tableView.backgroundView = nil;
 }
 
 - (void)viewDidUnload

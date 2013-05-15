@@ -15,4 +15,6 @@
 + (NSMutableArray*)getValuesWithTag:(NSString*)aTag fromEnvelope:(NSString*)anEnvelope;
 + (NSString *)clearSpacesFromString:(NSString*)aString;
 + (BOOL)hasThisTag:(NSString*)tag fromfromEnvelope:(NSString*)anEnvelope;
++ (NSString*)correctNumberValue:(NSString*)numberValue;
+
 @end

@@ -19,6 +19,8 @@
     return self;
 }
 
+
+
 - (void)didReceiveMemoryWarning
 {
     // Releases the view if it doesn't have a superview.
@@ -37,7 +39,14 @@
     [phone setDataDetectorTypes:UIDataDetectorTypePhoneNumber];
 //    [mail setBackgroundColor:[UIColor blueColor] ];
 }
-
+- (void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:YES];
+    //    UIBarButtonItem *nextButton = [[UIBarButtonItem alloc] initWithTitle:@"Yenile" style:UIBarButtonItemStyleBordered target:self action:@selector(refreshConfirmations)];
+    // [[[self tabBarController ]navigationItem] setRightBarButtonItem:nextButton];
+    [[self navigationItem] setTitle:@"Hakkında"];
+    //[myTableView reloadData];
+    [coreDataSwitch setOn:[CoreDataHandler isCoreDataSwitchOn]];
+}
 - (void)viewDidUnload
 {
     [super viewDidUnload];
@@ -49,6 +58,16 @@
 {
     // Return YES for supported orientations
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
+}
+
+
+- (IBAction)reportProblem:(id)sender {
+    CSReportProblemViewController *report = [[CSReportProblemViewController alloc] initWithUser:user];
+    [[self navigationController] pushViewController:report animated:YES];
+}
+
+- (IBAction)coreDataSwitchChanged:(id)sender {
+    [CoreDataHandler saveCoreDataSwitchState:[coreDataSwitch isOn]];
 }
 
 @end

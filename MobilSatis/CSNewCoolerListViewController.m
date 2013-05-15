@@ -51,14 +51,18 @@
     [[cell textLabel] setText:[tempCooler  description]];
     [[cell detailTextLabel] setText:[tempCooler matnr]];
     
-    [cell setTextColor:[CSApplicationProperties  getUsualTextColor]];
+    cell.contentView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"RowStyle-20.png"]];
+    
+        //[cell setTextColor:[CSApplicationProperties getUsualTextColor]];
+    cell.textLabel.textColor = [UIColor whiteColor];
+
+    //[cell setTextColor:[CSApplicationProperties  getUsualTextColor]];
     if ([tempCooler.type isEqualToString:@"FICI_SOG"]) {
-        cell.imageView.image = [UIImage imageNamed:@"fici2.png"];    
-        [cell setAccessoryType:UITableViewCellAccessoryDisclosureIndicator];
+        cell.imageView.image = [UIImage imageNamed:@"appiconlar-09.png"]; 
     }
     else{
        // [cell setAccessoryType:UITableViewCellAccessoryCheckmark]; çirkin oldu.
-       cell.imageView.image = [UIImage imageNamed:@"siselisise_sogutucu.png"];
+       cell.imageView.image = [UIImage imageNamed:@"appiconlar-10.png"]; 
     }
     return cell;
 }
@@ -103,7 +107,7 @@
     }
     
 }
--(void)getResponseWithString:(NSString *)myResponse{
+-(void)getResponseWithString:(NSString *)myResponse andSender:(ABHSAPHandler *)me{
     [super stopAnimationOnView];
     NSString *installationNumber = [[NSString alloc] init];
     

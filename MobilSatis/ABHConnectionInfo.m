@@ -10,39 +10,49 @@
 
 @implementation ABHConnectionInfo
 static NSString *connectionUrl = @"http://saprfcwebserviceext1.abh.com.tr/SapRFCWebService/services/RFCService";
-NSString *hostName = @"SRECTS081"; //test-10.12.1.188
-//NSString *hostName =@"10.12.1.179"; //canli
+//NSString *hostName = @"10.12.1.188"; //test-10.12.1.188
+//NSString *hostName =@"10.12.1.185"; //canli 179
+static NSString *hostName =@"10.12.1.179";
 
-//NSString *client = @"300"; //canli
-NSString *client = @"100";
-//NSString *destination = @"ECP300CLNT";
-NSString *destination = @"CLNT100";//CLNT100	
-NSString *systemNumber = @"00";
+NSString *client = @"300"; //canli
+//NSString *client = @"100";
+NSString *destination = @"ECP300CLNT";
+//NSString *destination = @"CLNT100";//CLNT100
+static NSString *systemNumber = @"00"; //00
 NSString *userId = @"MOBIL";
 NSString *password = @"12345678";
+//NSString *userId = @"AATAC";
+//NSString *password = @"1Q2w3e4r5t";
 
-NSString *R3hostName = @"10.12.253.2"; //test-10.12.1.188
 
+NSString *R3hostName = @"200.100.32.49";
+//49da var test-10.12.1.188  //qa -10.12.253.2
+//NSString *R3hostName = @"10.12.253.2";
 NSString *R3client = @"330";
-//NSString *destination = @"ECP300CLNT";
-NSString *R3destination = @"AGT330";//CLNT100	
-NSString *R3systemNumber = @"00";
-NSString *R3userId = @"AALPK";
-NSString *R3password = @"alpefes2011";
+//NSString *R3destination = @"AGT330";
+NSString *R3destination = @"AGP330";//agt330CLNT100
+NSString *R3systemNumber = @"01";
+//NSString *R3userId = @"AALPK";
+//NSString *R3password = @"alpeylul2012";
+NSString *R3userId = @"MOBIL";
+NSString *R3password = @"abh12345";
 
 
-
-NSString *BWhostName =@"10.12.1.179"; //canli
+NSString *BWhostName = @"10.12.1.179"; //canli
 
 NSString *BWclient = @"300"; //canli
 
 NSString *BWdestination = @"ECP300CLNT";
 
-NSString *BWsystemNumber = @"00";
+NSString *BWsystemNumber = @"01";
 NSString *BWuserId = @"MOBIL";
 NSString *BWpassword = @"12345678";
 
-
+NSString *panoramaUsername = @"WEBSERVICE";
+NSString *panoramaPassword = @"WEBSERVICE";
+NSString *panoramaWorkYear = @"2012";
+NSString *panoramaCompanyCode = @"1";
+NSString *panoramaDistrubutionCode = @"545";
 
 
 +(NSString*) getConnectionUrl{
@@ -73,7 +83,12 @@ NSString *BWpassword = @"12345678";
     return password;
 }
 
-
++(void) setHostName:(NSString*)newHostName{
+    hostName = newHostName;
+}
++(void) setSystemNumeber:(NSString*)newSystemNumber{
+    systemNumber = newSystemNumber;
+}
 
 
 +(NSString*) getR3HostName{
@@ -122,5 +137,21 @@ NSString *BWpassword = @"12345678";
 
 +(NSString*) getBWPassword{
     return BWpassword;
+}
+
++(NSString*) getPanaromaUsername{
+    return panoramaUsername;
+}
++(NSString*) getPanaromaPassword{
+    return panoramaPassword;
+}
++(NSString*) getPanaromaWorkYear{
+    return panoramaWorkYear;
+}
++(NSString*) getPanaromaCompanyCode{
+    return panoramaCompanyCode;
+}
++(NSString*) getPanaromaDistrubutionCode{
+    return panoramaDistrubutionCode;
 }
 @end

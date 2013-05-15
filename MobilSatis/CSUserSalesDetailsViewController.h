@@ -7,7 +7,17 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "CSBaseViewController.h"
+#import "CSUserSaleData.h"
+#import "CSUserSaleDataViewController.h"
+@interface CSUserSalesDetailsViewController : CSBaseViewController<UITableViewDataSource,UITableViewDelegate>{
+    IBOutlet UITableView *table;
+    NSMutableArray *dataArray;
+    NSString *title;
+    NSString *beginDate;
+    NSString *endDate;
 
-@interface CSUserSalesDetailsViewController : UIViewController
+}
 
+- (id)initWithUser:(CSUser *)myUser andArray:(NSMutableArray*)array andTitle:(NSString*)atitle beginDate:(NSString*)aBegin endDate:(NSString *)aEnd;
 @end

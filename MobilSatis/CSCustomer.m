@@ -9,5 +9,5 @@
 #import "CSCustomer.h"
 
 @implementation CSCustomer
-@synthesize kunnr,name1,dealer,relationship,coolers,role,locationCoordinate;
+@synthesize kunnr,name1,dealer,relationship,coolers,role,locationCoordinate,hasPlan,type,other;
 @end

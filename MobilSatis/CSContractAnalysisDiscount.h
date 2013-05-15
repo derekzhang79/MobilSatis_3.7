@@ -31,6 +31,7 @@
     NSString *iktas;
     NSString *isert;
     NSString *iserk;
+    NSString *contractDescription;
     }
 
 @property (nonatomic, retain) NSString *idNum;
@@ -54,6 +55,7 @@
 @property (nonatomic, retain) NSString *iktas;
 @property (nonatomic, retain) NSString *isert;
 @property (nonatomic, retain) NSString *iserk;
+@property (nonatomic, retain) NSString *contractDescription;
 
 
 

@@ -8,12 +8,14 @@
 
 #import <Foundation/Foundation.h>
 #import "CSMapPoint.h"
-@interface CSUser : NSObject<NSCoding>{
+@interface CSUser : NSObject {
     NSString *username;
     NSString *password;
     NSString *name;
     NSString *surname;
     NSString *mail;
+    NSString *sapUser;
+    NSString *javaPassword;
     NSMutableArray *customers;
     NSMutableArray *dealers;
     CSMapPoint *location;
@@ -26,6 +28,8 @@
 @property (nonatomic,retain) NSMutableArray *customers;
 @property (nonatomic,retain) NSMutableArray *dealers;
 @property (nonatomic,retain) CSMapPoint *location;
+@property (nonatomic, retain) NSString *sapUser;
+@property (nonatomic, retain) NSString *javaPassword;
 
 
 

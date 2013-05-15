@@ -17,6 +17,7 @@
 @synthesize contractAnalysis;
 @synthesize contractDiscount, discountList;
 @synthesize contractDiscountViewController;
+@synthesize transferList;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -27,13 +28,14 @@
     return self;
 }
 
-- (id)initWithUser:(CSUser *)myUser andSelectedCustomer:(NSString *)selectedCustomer{
+- (id)initWithUser:(CSUser *)myUser andSelectedCustomer:(CSCustomer*)selectedCustomer{
     self = [super initWithUser:myUser];
     contractAnalysis = [[CSContractAnalysis alloc] init];
-    contractAnalysis.kunnr = selectedCustomer;
+    contractAnalysis.kunnr = selectedCustomer.kunnr;
     
     discountList     = [[NSMutableArray alloc] init];
-    
+    transferList     = [[NSMutableArray alloc] init];
+    customer = selectedCustomer;
     return  self;
 }
 
@@ -72,9 +74,10 @@
     ABHSAPHandler *sapHandler = [[ABHSAPHandler alloc] initWithConnectionUrl:[ABHConnectionInfo getConnectionUrl]];
     [sapHandler setDelegate:self];
     [sapHandler prepRFCWithHostName:[ABHConnectionInfo  getR3HostName] andClient:[ABHConnectionInfo getR3Client] andDestination:[ABHConnectionInfo getDestination] andSystemNumber:[ABHConnectionInfo getSystemNumber] andUserId:[ABHConnectionInfo getR3UserId] andPassword:[ABHConnectionInfo getR3Password] andRFCName:@"ZSDKA_DATA_SEND_MOBIL"];
-    
-    [sapHandler addImportWithKey:@"I_KUNNR" andValue:@"0001001257"];//self.contractAnalysis.kunnr];
-    [sapHandler addImportWithKey:@"I_MYK" andValue:@"0031026001"];//user.username];
+    //for test: 0001001257
+    [sapHandler addImportWithKey:@"I_KUNNR" andValue:customer.kunnr];//self.contractAnalysis.kunnr];
+    //for test: 0031026001
+    [sapHandler addImportWithKey:@"I_MYK" andValue:user.username];//user.username];
     
     [sapHandler addTableWithName:@"ET_ISKONTO" andColumns:[NSArray arrayWithObjects:@"IDNUM",@"KATUR",@"MATNR",
                                                            @"AKTAR", @"KTMIK", @"KOBRM", @"NKTUT", @"NKTUT_TOP", @"EFSRT",
@@ -99,6 +102,9 @@
         contractAnalysis.analysisEndingDate = [[ABHXMLHelper getValuesWithTag:@"BITTR" fromEnvelope:envelope] objectAtIndex:0];
         contractAnalysis.contractStartingDate= [[ABHXMLHelper getValuesWithTag:@"ISBGD" fromEnvelope:envelope] objectAtIndex:0];
         contractAnalysis.contractEndingDate = [[ABHXMLHelper getValuesWithTag:@"ISEND" fromEnvelope:envelope] objectAtIndex:0];
+        contractAnalysis.analysisCriteria = [[ABHXMLHelper getValuesWithTag:@"ABZLT" fromEnvelope:envelope] objectAtIndex:0];
+        contractAnalysis.estimatedTargetLitre = [[ABHXMLHelper getValuesWithTag:@"AOBRM" fromEnvelope:envelope] objectAtIndex:0];
+
     }
     @catch (NSException *exception) {
         NSLog(@"Tuttum valla bırakmam");
@@ -113,67 +119,69 @@
 
     @try {
         contractAnalysis.lastYearSystemSale =
-        [NSString stringWithFormat:@"%@LT / %@TRY",[ABHXMLHelper correctNumberValue:[[ABHXMLHelper getValuesWithTag:@"LSYEFS" fromEnvelope:envelope] objectAtIndex:0]], [ABHXMLHelper correctNumberValue:[[ABHXMLHelper getValuesWithTag:@"TSYEFS" fromEnvelope:envelope] objectAtIndex:0]]];
+        [NSString stringWithFormat:@"%@LT / %@TL",[ABHXMLHelper correctNumberValue:[[ABHXMLHelper getValuesWithTag:@"LSYEFS" fromEnvelope:envelope] objectAtIndex:0]], [ABHXMLHelper correctNumberValue:[[ABHXMLHelper getValuesWithTag:@"TSYEFS" fromEnvelope:envelope] objectAtIndex:0]]];
         
         contractAnalysis.estimatedAnalysisSale =
-        [NSString stringWithFormat:@"%@LT / %@TRY",[ABHXMLHelper correctNumberValue:[[ABHXMLHelper getValuesWithTag:@"LTHEFS" fromEnvelope:envelope] objectAtIndex:0]], [ABHXMLHelper correctNumberValue:[[ABHXMLHelper getValuesWithTag:@"TTHEFS" fromEnvelope:envelope] objectAtIndex:0]]];
+        [NSString stringWithFormat:@"%@LT / %@TL",[ABHXMLHelper correctNumberValue:[[ABHXMLHelper getValuesWithTag:@"LTHEFS" fromEnvelope:envelope] objectAtIndex:0]], [ABHXMLHelper correctNumberValue:[[ABHXMLHelper getValuesWithTag:@"TTHEFS" fromEnvelope:envelope] objectAtIndex:0]]];
         
         contractAnalysis.estimatedYearSale =
-        [NSString stringWithFormat:@"%@LT / %@TRY",[ABHXMLHelper correctNumberValue:[[ABHXMLHelper getValuesWithTag:@"YLTHEFS" fromEnvelope:envelope] objectAtIndex:0]], [ABHXMLHelper correctNumberValue:[[ABHXMLHelper getValuesWithTag:@"YTTHEFS" fromEnvelope:envelope] objectAtIndex:0]]];
+        [NSString stringWithFormat:@"%@LT / %@TL",[ABHXMLHelper correctNumberValue:[[ABHXMLHelper getValuesWithTag:@"YLTHEFS" fromEnvelope:envelope] objectAtIndex:0]], [ABHXMLHelper correctNumberValue:[[ABHXMLHelper getValuesWithTag:@"YTTHEFS" fromEnvelope:envelope] objectAtIndex:0]]];
         
         contractAnalysis.enterpriseCapitalN =
-        [NSString stringWithFormat:@"%@LT / %@TRY",[ABHXMLHelper correctNumberValue:[[ABHXMLHelper getValuesWithTag:@"LISKTL" fromEnvelope:envelope] objectAtIndex:0]], [ABHXMLHelper correctNumberValue:[[ABHXMLHelper getValuesWithTag:@"TISKTL" fromEnvelope:envelope] objectAtIndex:0]]];
+        [NSString stringWithFormat:@"%@LT / %@TL",[ABHXMLHelper correctNumberValue:[[ABHXMLHelper getValuesWithTag:@"LISKTL" fromEnvelope:envelope] objectAtIndex:0]], [ABHXMLHelper correctNumberValue:[[ABHXMLHelper getValuesWithTag:@"TISKTL" fromEnvelope:envelope] objectAtIndex:0]]];
         
         contractAnalysis.enterpriseCapitalM =
-        [NSString stringWithFormat:@"%@LT / %@TRY",[ABHXMLHelper correctNumberValue:[[ABHXMLHelper getValuesWithTag:@"LISKTLM" fromEnvelope:envelope] objectAtIndex:0]], [ABHXMLHelper correctNumberValue:[[ABHXMLHelper getValuesWithTag:@"TISKTLM" fromEnvelope:envelope] objectAtIndex:0]]];
+        [NSString stringWithFormat:@"%@LT / %@TL",[ABHXMLHelper correctNumberValue:[[ABHXMLHelper getValuesWithTag:@"LISKTLM" fromEnvelope:envelope] objectAtIndex:0]], [ABHXMLHelper correctNumberValue:[[ABHXMLHelper getValuesWithTag:@"TISKTLM" fromEnvelope:envelope] objectAtIndex:0]]];
         
         contractAnalysis.cashBasedContract =
-        [NSString stringWithFormat:@"%@LT / %@TRY",[ABHXMLHelper correctNumberValue:[[ABHXMLHelper getValuesWithTag:@"LNKTKTL" fromEnvelope:envelope] objectAtIndex:0]], [ABHXMLHelper correctNumberValue:[[ABHXMLHelper getValuesWithTag:@"TNKTKTL" fromEnvelope:envelope] objectAtIndex:0]]];
+        [NSString stringWithFormat:@"%@LT / %@TL",[ABHXMLHelper correctNumberValue:[[ABHXMLHelper getValuesWithTag:@"LNKTKTL" fromEnvelope:envelope] objectAtIndex:0]], [ABHXMLHelper correctNumberValue:[[ABHXMLHelper getValuesWithTag:@"TNKTKTL" fromEnvelope:envelope] objectAtIndex:0]]];
         
         contractAnalysis.cashBasedProduct =
-        [NSString stringWithFormat:@"%@LT / %@TRY",[ABHXMLHelper correctNumberValue:[[ABHXMLHelper getValuesWithTag:@"LNKTMAL" fromEnvelope:envelope] objectAtIndex:0]], [ABHXMLHelper correctNumberValue:[[ABHXMLHelper getValuesWithTag:@"TNKTMAL" fromEnvelope:envelope] objectAtIndex:0]]];
+        [NSString stringWithFormat:@"%@LT / %@TL",[ABHXMLHelper correctNumberValue:[[ABHXMLHelper getValuesWithTag:@"LNKTMAL" fromEnvelope:envelope] objectAtIndex:0]], [ABHXMLHelper correctNumberValue:[[ABHXMLHelper getValuesWithTag:@"TNKTMAL" fromEnvelope:envelope] objectAtIndex:0]]];
         
         contractAnalysis.projectContractN =
-        [NSString stringWithFormat:@"%@LT / %@TRY",[ABHXMLHelper correctNumberValue:[[ABHXMLHelper getValuesWithTag:@"LPKKTL" fromEnvelope:envelope] objectAtIndex:0]], [ABHXMLHelper correctNumberValue:[[ABHXMLHelper getValuesWithTag:@"TPKKTL" fromEnvelope:envelope] objectAtIndex:0]]];
+        [NSString stringWithFormat:@"%@LT / %@TL",[ABHXMLHelper correctNumberValue:[[ABHXMLHelper getValuesWithTag:@"LPKKTL" fromEnvelope:envelope] objectAtIndex:0]], [ABHXMLHelper correctNumberValue:[[ABHXMLHelper getValuesWithTag:@"TPKKTL" fromEnvelope:envelope] objectAtIndex:0]]];
         
         contractAnalysis.projectContractM =
-        [NSString stringWithFormat:@"%@LT / %@TRY",[ABHXMLHelper correctNumberValue:[[ABHXMLHelper getValuesWithTag:@"LPKKTLM" fromEnvelope:envelope] objectAtIndex:0]], [ABHXMLHelper correctNumberValue:[[ABHXMLHelper getValuesWithTag:@"TPKKTLM" fromEnvelope:envelope] objectAtIndex:0]]];
+        [NSString stringWithFormat:@"%@LT / %@TL",[ABHXMLHelper correctNumberValue:[[ABHXMLHelper getValuesWithTag:@"LPKKTLM" fromEnvelope:envelope] objectAtIndex:0]], [ABHXMLHelper correctNumberValue:[[ABHXMLHelper getValuesWithTag:@"TPKKTLM" fromEnvelope:envelope] objectAtIndex:0]]];
         
         contractAnalysis.discountFromInvoice =
-        [NSString stringWithFormat:@"%@LT / %@TRY",[ABHXMLHelper correctNumberValue:[[ABHXMLHelper getValuesWithTag:@"LFAKTL" fromEnvelope:envelope] objectAtIndex:0]], [ABHXMLHelper correctNumberValue:[[ABHXMLHelper getValuesWithTag:@"TFAKTL" fromEnvelope:envelope] objectAtIndex:0]]];
+        [NSString stringWithFormat:@"%@LT / %@TL",[ABHXMLHelper correctNumberValue:[[ABHXMLHelper getValuesWithTag:@"LFAKTL" fromEnvelope:envelope] objectAtIndex:0]], [ABHXMLHelper correctNumberValue:[[ABHXMLHelper getValuesWithTag:@"TFAKTL" fromEnvelope:envelope] objectAtIndex:0]]];
         
         contractAnalysis.periodicDiscount =
-        [NSString stringWithFormat:@"%@LT / %@TRY",[ABHXMLHelper correctNumberValue:[[ABHXMLHelper getValuesWithTag:@"LDIKTL" fromEnvelope:envelope] objectAtIndex:0]], [ABHXMLHelper correctNumberValue:[[ABHXMLHelper getValuesWithTag:@"TDIKTL" fromEnvelope:envelope] objectAtIndex:0]]];
+        [NSString stringWithFormat:@"%@LT / %@TL",[ABHXMLHelper correctNumberValue:[[ABHXMLHelper getValuesWithTag:@"LDIKTL" fromEnvelope:envelope] objectAtIndex:0]], [ABHXMLHelper correctNumberValue:[[ABHXMLHelper getValuesWithTag:@"TDIKTL" fromEnvelope:envelope] objectAtIndex:0]]];
         
         contractAnalysis.enterpriseCredit =
-        [NSString stringWithFormat:@"%@LT / %@TRY",[ABHXMLHelper correctNumberValue:[[ABHXMLHelper getValuesWithTag:@"LIKKTL" fromEnvelope:envelope] objectAtIndex:0]], [ABHXMLHelper correctNumberValue:[[ABHXMLHelper getValuesWithTag:@"TIKKTL" fromEnvelope:envelope] objectAtIndex:0]]];
+        [NSString stringWithFormat:@"%@LT / %@TL",[ABHXMLHelper correctNumberValue:[[ABHXMLHelper getValuesWithTag:@"LIKKTL" fromEnvelope:envelope] objectAtIndex:0]], [ABHXMLHelper correctNumberValue:[[ABHXMLHelper getValuesWithTag:@"TIKKTL" fromEnvelope:envelope] objectAtIndex:0]]];
         
         contractAnalysis.commercialContract =
-        [NSString stringWithFormat:@"%@LT / %@TRY",[ABHXMLHelper correctNumberValue:[[ABHXMLHelper getValuesWithTag:@"LRKKTL" fromEnvelope:envelope] objectAtIndex:0]], [ABHXMLHelper correctNumberValue:[[ABHXMLHelper getValuesWithTag:@"TRKKTL" fromEnvelope:envelope] objectAtIndex:0]]];
+        [NSString stringWithFormat:@"%@LT / %@TL",[ABHXMLHelper correctNumberValue:[[ABHXMLHelper getValuesWithTag:@"LRKKTL" fromEnvelope:envelope] objectAtIndex:0]], [ABHXMLHelper correctNumberValue:[[ABHXMLHelper getValuesWithTag:@"TRKKTL" fromEnvelope:envelope] objectAtIndex:0]]];
         
         contractAnalysis.totalContract =
-        [NSString stringWithFormat:@"%@LT / %@TRY",[ABHXMLHelper correctNumberValue:[[ABHXMLHelper getValuesWithTag:@"LTPKTL" fromEnvelope:envelope] objectAtIndex:0]], [ABHXMLHelper correctNumberValue:[[ABHXMLHelper getValuesWithTag:@"TTPKTL" fromEnvelope:envelope] objectAtIndex:0]]];
+        [NSString stringWithFormat:@"%@LT / %@TL",[ABHXMLHelper correctNumberValue:[[ABHXMLHelper getValuesWithTag:@"LTPKTL" fromEnvelope:envelope] objectAtIndex:0]], [ABHXMLHelper correctNumberValue:[[ABHXMLHelper getValuesWithTag:@"TTPKTL" fromEnvelope:envelope] objectAtIndex:0]]];
         
         contractAnalysis.grossIncome =
-        [NSString stringWithFormat:@"%@TRY",[ABHXMLHelper correctNumberValue:[[ABHXMLHelper getValuesWithTag:@"NTGTR" fromEnvelope:envelope] objectAtIndex:0]]];
+        [NSString stringWithFormat:@"%@TL",[ABHXMLHelper correctNumberValue:[[ABHXMLHelper getValuesWithTag:@"NTGTR" fromEnvelope:envelope] objectAtIndex:0]]];
         
         contractAnalysis.brutIncome =
-        [NSString stringWithFormat:@"%@TRY",[ABHXMLHelper correctNumberValue:[[ABHXMLHelper getValuesWithTag:@"BRGTR" fromEnvelope:envelope] objectAtIndex:0]]];
+        [NSString stringWithFormat:@"%@TL",[ABHXMLHelper correctNumberValue:[[ABHXMLHelper getValuesWithTag:@"BRGTR" fromEnvelope:envelope] objectAtIndex:0]]];
         
         contractAnalysis.pointToPoint =
-        [NSString stringWithFormat:@"%@LT / %@TRY",[ABHXMLHelper correctNumberValue:[[ABHXMLHelper getValuesWithTag:@"LBSLTR" fromEnvelope:envelope] objectAtIndex:0]], [ABHXMLHelper correctNumberValue:[[ABHXMLHelper getValuesWithTag:@"TBSLTR" fromEnvelope:envelope] objectAtIndex:0]]];
+        [NSString stringWithFormat:@"%@LT / %@TL",[ABHXMLHelper correctNumberValue:[[ABHXMLHelper getValuesWithTag:@"LBSLTR" fromEnvelope:envelope] objectAtIndex:0]], [ABHXMLHelper correctNumberValue:[[ABHXMLHelper getValuesWithTag:@"TBSLTR" fromEnvelope:envelope] objectAtIndex:0]]];
         
         contractAnalysis.transferedCost =
-        [NSString stringWithFormat:@"%@LT / %@TRY",[ABHXMLHelper correctNumberValue:[[ABHXMLHelper getValuesWithTag:@"LDVMLT" fromEnvelope:envelope] objectAtIndex:0]], [ABHXMLHelper correctNumberValue:[[ABHXMLHelper getValuesWithTag:@"TDVMLT" fromEnvelope:envelope] objectAtIndex:0]]];
+        [NSString stringWithFormat:@"%@LT / %@TL",[ABHXMLHelper correctNumberValue:[[ABHXMLHelper getValuesWithTag:@"LDVMLT" fromEnvelope:envelope] objectAtIndex:0]], [ABHXMLHelper correctNumberValue:[[ABHXMLHelper getValuesWithTag:@"TDVMLT" fromEnvelope:envelope] objectAtIndex:0]]];
         
         contractAnalysis.grossProceeds =
-        [NSString stringWithFormat:@"%@TRY",[ABHXMLHelper correctNumberValue:[[ABHXMLHelper getValuesWithTag:@"BHSLT" fromEnvelope:envelope] objectAtIndex:0]]];
+        [NSString stringWithFormat:@"%@TL",[ABHXMLHelper correctNumberValue:[[ABHXMLHelper getValuesWithTag:@"BHSLT" fromEnvelope:envelope] objectAtIndex:0]]];
         
         contractAnalysis.grossPercentageWithOTV =
-        [NSString stringWithFormat:@"%@TRY",[[ABHXMLHelper getValuesWithTag:@"ODCRP" fromEnvelope:envelope] objectAtIndex:0]];
+        [NSString stringWithFormat:@"%% %@",[[ABHXMLHelper getValuesWithTag:@"ODCRP" fromEnvelope:envelope] objectAtIndex:0]];
         
         contractAnalysis.grossPercentageWithoutOTV =
-        [NSString stringWithFormat:@"%@TRY",[[ABHXMLHelper getValuesWithTag:@"OHCRP" fromEnvelope:envelope] objectAtIndex:0]];
+        [NSString stringWithFormat:@"%% %@",[[ABHXMLHelper getValuesWithTag:@"OHCRP" fromEnvelope:envelope] objectAtIndex:0]];
+        
+
     }
     @catch (NSException *exception) {
         NSLog(@"Tuttum valla bırakmam");
@@ -213,8 +221,14 @@
             contractDiscount.iktas = [[ABHXMLHelper getValuesWithTag:@"IKTAS" fromEnvelope:str] objectAtIndex:0];
             contractDiscount.isert = [[ABHXMLHelper getValuesWithTag:@"ISERT" fromEnvelope:str] objectAtIndex:0];
             contractDiscount.iserk = [[ABHXMLHelper getValuesWithTag:@"ISERK" fromEnvelope:str] objectAtIndex:0];
+            contractDiscount.discountPercent = [[ABHXMLHelper getValuesWithTag:@"ISKRT" fromEnvelope:str] objectAtIndex:0];
+            contractDiscount.contractDescription = [[ABHXMLHelper getValuesWithTag:@"ISTNM" fromEnvelope:str] objectAtIndex:0];
             
-            [discountList addObject:contractDiscount];
+            if ([[contractDiscount contractType] isEqualToString:@"0005"] || [[contractDiscount contractType] isEqualToString:@"0006"])
+                [transferList addObject:contractDiscount];
+            else
+                [discountList addObject:contractDiscount];
+
         }
     }
     @catch (NSException *exception) {
@@ -226,7 +240,7 @@
     
 }
 
-- (void)getResponseWithString:(NSString *)myResponse{
+- (void)getResponseWithString:(NSString *)myResponse andSender:(ABHSAPHandler *)me{
     [super stopAnimationOnView];
         
     NSString *errorMessage = [[ABHXMLHelper getValuesWithTag:@"MESSAGE" fromEnvelope:myResponse] objectAtIndex:0];
@@ -291,12 +305,13 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     switch (section) {
         case 0:
-            return 8;
+            return 10;
             break;
         case 1:
             return 21;
+            break;
         case 2:
-            return 1;
+            return 2;
             break;
     }
     return 1;
@@ -309,6 +324,12 @@
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:CellIdentifier];
+    }
+    else
+    {
+        cell.textLabel.text = @"";
+        cell.detailTextLabel.text = @"";
+        cell.accessoryType = UITableViewCellAccessoryNone;
     }
     
     int section = [indexPath section];
@@ -337,20 +358,29 @@
                 cell.detailTextLabel.text = contractAnalysis.version;
                 break;
             case 4:
+                cell.textLabel.text = @"Analiz Kriteri";
+                cell.detailTextLabel.text = contractAnalysis.analysisCriteria;
+                break;
+            case 5:
                 cell.textLabel.text = @"Onay Numarası";
                 cell.detailTextLabel.text = contractAnalysis.approveNo;
                 break;
-            case 5:
+            case 6:
                 cell.textLabel.text = @"Talep Numarası";
                 cell.detailTextLabel.text = contractAnalysis.requestNo;
                 break;
-            case 6:
+            case 7:
                 cell.textLabel.text = @"Analiz Tarihi";
                 cell.detailTextLabel.text = [NSString stringWithFormat:@"%@ / %@", contractAnalysis.analysisStartingDate, contractAnalysis.analysisEndingDate];
                 break;
-            case 7:
+            case 8:
                 cell.textLabel.text = @"Sözleşme Tarihi";
                 cell.detailTextLabel.text = [NSString stringWithFormat:@"%@ / %@", contractAnalysis.contractStartingDate, contractAnalysis.contractEndingDate];
+                break;
+            case 9:
+                cell.textLabel.text = @"Tahmini Yıllık Litre";
+                cell.detailTextLabel.text = contractAnalysis.estimatedTargetLitre;
+                break;
             default:
                 break;
         }
@@ -449,25 +479,32 @@
     }
     else if (section == 2)
     {
-        cell.textLabel.text = @"Iskonto Bilgisi";
-        @try {
+        if ( row == 0 ) {
+            cell.textLabel.text = @"Iskonto Bilgisi";
+            cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+            cell.detailTextLabel.text = [NSString stringWithFormat:@"%i Adet",[transferList count]];
+        }
+        else if ( row == 1)
+        {
+            cell.textLabel.text = @"Katılım Bilgisi";
             cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
             cell.detailTextLabel.text = [NSString stringWithFormat:@"%i Adet",[discountList count]];
         }
-        @catch (NSException *exception) {
-            cell.detailTextLabel.text = @"0 Adet";
-        }
-        @finally {
-            
-        }
     }
+
     return cell;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    
+    if ([self isAnimationRunning]) {
+        return;
+    }
     if ([indexPath section] == 2) {
         if ([indexPath row] == 0) {
+            contractDiscountViewController = [[CSContractAnalysisDiscountViewController alloc] initWithDiscountList:transferList];
+            [self.navigationController pushViewController:contractDiscountViewController animated:YES];
+        }
+        if ([indexPath row] == 1) {
             contractDiscountViewController = [[CSContractAnalysisDiscountViewController alloc] initWithDiscountList:discountList];
             [self.navigationController pushViewController:contractDiscountViewController animated:YES];
         }

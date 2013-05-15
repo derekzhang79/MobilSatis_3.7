@@ -16,14 +16,15 @@
 @protocol CSConfirmConfirmationViewControllerDelegate;
 @interface CSConfirmConfirmationViewController : CSBaseViewController<ABHSAPHandlerDelegate,UIAlertViewDelegate>{
     CSConfirmation *myConfirmation;
-    IBOutlet UILabel *confirmationNumber;
-    IBOutlet UILabel *customerName;
     IBOutlet UITableView *myTableView;
     NSString *selectedProcess;
      id<CSConfirmConfirmationViewControllerDelegate>delegate;
+    UITableView *table;
 }
 @property (nonatomic,retain)CSConfirmation *myConfirmation;
 @property (nonatomic,retain)id<CSConfirmConfirmationViewControllerDelegate>delegate;
+@property (nonatomic, retain) IBOutlet UITableView *table;
+
 -(id)initWithConfirmation:(CSConfirmation*)aConfirmation;
 -(id)initWithConfirmation:(CSConfirmation*)aConfirmation andItems:(NSMutableArray*)myItems;
 -(IBAction)confirmConfirmation:(id)sender;

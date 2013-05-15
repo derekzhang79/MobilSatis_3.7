@@ -9,5 +9,5 @@
 #import <Foundation/Foundation.h>
 
 @interface CSApplicationHelper : NSObject
-
++ (NSString*)getMonthFromNumber:(int)monthNo;
 @end

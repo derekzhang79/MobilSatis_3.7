@@ -12,17 +12,22 @@
 #import "CSBaseViewController.h"
 #import "ABHSAPHandler.h"
 #import "CSNewCoolerListViewController.h"
+#import "CSCustomerDetailViewController.h"
+#import <CoreLocation/CoreLocation.h>
 
-@interface CSProcessSelectionViewController : CSBaseViewController<UIAlertViewDelegate,ABHSAPHandlerDelegate,UIAlertViewDelegate>{
+@interface CSProcessSelectionViewController : CSBaseViewController<UIAlertViewDelegate,ABHSAPHandlerDelegate,UIAlertViewDelegate, UITableViewDelegate, UITableViewDataSource>{
     
     CSCustomer *customer;
     NSString *selectedProcess;
 	CSProcessType *processType;
+    UITableView *tableView;
 }
 
 
 @property (nonatomic,retain)CSCustomer *customer;
 @property CSProcessType *processType;
+@property (nonatomic, retain) IBOutlet UITableView *tableView;
+
 
 -(id)initWithCustomer:(CSCustomer*)myCustomer andUser:(CSUser*)myUser;
 -(IBAction)sendInstallation:(id)sender;
@@ -33,6 +38,7 @@
 -(void)sendTakeAwayOrderToSap;
 -(void)handleTakeAwayResponseFromSap:(NSString*)myResponse;
 - (BOOL)isCustomerDealer:(CSCustomer*)aCustomer;
+- (void)navigateToCustomer;
 
 
 

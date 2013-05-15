@@ -8,11 +8,19 @@
 
 #import <UIKit/UIKit.h>
 #import "CSBaseViewController.h"
-@interface CSRegisterUserViewController : CSBaseViewController<UIAlertViewDelegate>{
-    IBOutlet UITextField *mailField;
+@interface CSRegisterUserViewController : CSBaseViewController <UIAlertViewDelegate, ABHSAPHandlerDelegate, UIScrollViewDelegate, UITextFieldDelegate> {
+    IBOutlet UITextField *mykUserField;
+    IBOutlet UITextField *mykPasswordField;
+    IBOutlet UITextField *sapUserField;
+    IBOutlet UITextField *sapPasswordField;
+    
     IBOutlet UILabel *welcomeLabel;
+    IBOutlet UIScrollView *scrollView;
+    UITextField *activeField;
 }
--(IBAction)saveMail:(id)sender;
+
+-(void)sendUserDataToSAP:(id)sender;
 -(void)updateUserInSap;
 - (IBAction)makeKeyboardGoAway;
+
 @end

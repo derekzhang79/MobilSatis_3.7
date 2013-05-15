@@ -30,7 +30,7 @@ NSMutableArray *coolers;
     [sapHandler prepCall];
     
 }
-+(void)getResponseWithString:(NSString *)myResponse{
++(void)getResponseWithString:(NSString *)myResponse andSender:(ABHSAPHandler *)me {
     coolers = [[NSMutableArray alloc] init];
     NSMutableArray *coolerIds =  [ABHXMLHelper getValuesWithTag:@"URUNID" fromEnvelope:myResponse];
     NSMutableArray *descriptions =  [ABHXMLHelper getValuesWithTag:@"TANIM" fromEnvelope:myResponse];

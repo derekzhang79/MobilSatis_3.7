@@ -1,4 +1,170 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model name="StaticDataModel" userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="1171" systemVersion="11E53" minimumToolsVersion="Xcode 4.1" macOSVersion="Automatic" iOSVersion="Automatic">
-    <elements/>
+<model name="" userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="1811" systemVersion="12C3006" minimumToolsVersion="Xcode 4.1" macOSVersion="Automatic" iOSVersion="Automatic">
+    <entity name="CDOChartSaleData" representedClassName="CDOChartSaleData" syncable="YES">
+        <attribute name="chartTitle1" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="chartTitle2" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="chartTitle3" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="chartReport1" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CDOMonthlySaleData" syncable="YES"/>
+        <relationship name="chartReport2" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CDOMonthlySaleData" syncable="YES"/>
+        <relationship name="chartReport3" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CDOMonthlySaleData" syncable="YES"/>
+    </entity>
+    <entity name="CDOCooler" representedClassName="CDOCooler" syncable="YES">
+        <attribute name="barcodeFailed" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="desc" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="matnr" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="quantity" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="sernr" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="status" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="type" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="CDOCoordinate" representedClassName="CDOCoordinate" syncable="YES">
+        <attribute name="latitude" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="longitude" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
+    </entity>
+    <entity name="CDOCustomer" representedClassName="CDOCustomer" syncable="YES">
+        <attribute name="hasPlan" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="kunnr" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="name1" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="other" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="relationship" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="role" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="type" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="dealer" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="CDODealer" syncable="YES"/>
+        <relationship name="location" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="CDOLocation" syncable="YES"/>
+    </entity>
+    <entity name="CDOCustomerDetail" representedClassName="CDOCustomerDetail" syncable="YES">
+        <attribute name="borough" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="boroughCode" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="cashRegister" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="certificateNumber" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="certificateOffice" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="closeM2" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="customerFeature" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="customerGroup" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="customerManager" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="customerPosition" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="distrinct" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="distrinctCode" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="doorNumber" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="efesContract" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="kunnr" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="locationGroup" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="m2" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="mainStreet" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="marketDeveloper" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="name1" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="neighbourhood" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="openM2" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="postalCode" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="saleChief" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="saleManager" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="salesRepresentative" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="sesGroup" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="state" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="stateCode" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="status" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="street" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="taxNumber" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="taxOffice" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="telf1" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="coolers" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CDOCooler" syncable="YES"/>
+        <relationship name="customerSale" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CDOMonthlySaleData" syncable="YES"/>
+        <relationship name="customerVisitList" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CDOCustomerVisitList" syncable="YES"/>
+        <relationship name="dealerSale" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="CDODealerSalesData" syncable="YES"/>
+        <relationship name="otherCoolers" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CDOCooler" syncable="YES"/>
+    </entity>
+    <entity name="CDOCustomerVisitList" representedClassName="CDOCustomerVisitList" syncable="YES">
+        <attribute name="date" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="myk" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="CDODealer" representedClassName="CDODealer" syncable="YES">
+        <attribute name="kunnr" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="name1" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="CDODealerSalesData" representedClassName="CDODealerSalesData" syncable="YES">
+        <attribute name="title1" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="title2" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="title3" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="dealerSalesReport1" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CDOMonthlySaleData" syncable="YES"/>
+        <relationship name="dealerSalesReport2" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CDOMonthlySaleData" syncable="YES"/>
+        <relationship name="dealerSalesReport3" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CDOMonthlySaleData" syncable="YES"/>
+    </entity>
+    <entity name="CDOLocation" representedClassName="CDOLocation" syncable="YES">
+        <attribute name="pngName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="tablePngName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="coordinate" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="CDOCoordinate" syncable="YES"/>
+    </entity>
+    <entity name="CDOLocationCustomer" representedClassName="CDOLocationCustomer" syncable="YES">
+        <attribute name="hasPlan" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="kunnr" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="name1" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="other" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="relationship" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="type" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="location" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="CDOLocation" syncable="YES"/>
+    </entity>
+    <entity name="CDOMonthlySaleData" representedClassName="CDOMonthlySaleData" syncable="YES">
+        <attribute name="budget" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="month" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="sale" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="CDOSaleData" representedClassName="CDOSaleData" syncable="YES">
+        <attribute name="actualCurrent" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="actualHistory" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="budget" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="category" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="currentRate" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="development" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="label" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="leftAmount" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="lineKey" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="CDOUser" representedClassName="CDOUser" syncable="YES">
+        <attribute name="email" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="password" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="surname" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="userMyk" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="chartSaleData" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="CDOChartSaleData" syncable="YES"/>
+        <relationship name="customers" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CDOCustomer" syncable="YES"/>
+        <relationship name="dealers" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CDODealer" syncable="YES"/>
+        <relationship name="location" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="CDOCoordinate" syncable="YES"/>
+        <relationship name="userSaleData" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="CDOUserSaleData" syncable="YES"/>
+    </entity>
+    <entity name="CDOUserSaleData" representedClassName="CDOUserSaleData" syncable="YES">
+        <attribute name="saleMessage" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="saleTitle1" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="saleTitle2" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="saleTitle3" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="saleTitle4" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="saleReport1" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CDOSaleData" syncable="YES"/>
+        <relationship name="saleReport2" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CDOSaleData" syncable="YES"/>
+        <relationship name="saleReport3" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CDOSaleData" syncable="YES"/>
+        <relationship name="saleReport4" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CDOSaleData" syncable="YES"/>
+    </entity>
+    <entity name="CDOVisitDetail" representedClassName="CDOVisitDetail" syncable="YES">
+        <attribute name="customerNumber" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="text" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="userMyk" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <elements>
+        <element name="CDOChartSaleData" positionX="-8451" positionY="-4759" width="128" height="133"/>
+        <element name="CDOCooler" positionX="-8246" positionY="-4446" width="128" height="148"/>
+        <element name="CDOCoordinate" positionX="-8208" positionY="-4851" width="128" height="73"/>
+        <element name="CDOCustomer" positionX="-7895" positionY="-4705" width="128" height="178"/>
+        <element name="CDOCustomerDetail" positionX="-8651" positionY="-4878" width="128" height="643"/>
+        <element name="CDOCustomerVisitList" positionX="-7895" positionY="-4318" width="128" height="88"/>
+        <element name="CDODealer" positionX="-8100" positionY="-4456" width="128" height="73"/>
+        <element name="CDODealerSalesData" positionX="-7839" positionY="-4867" width="128" height="133"/>
+        <element name="CDOLocation" positionX="-8028" positionY="-4941" width="128" height="103"/>
+        <element name="CDOLocationCustomer" positionX="-8487" positionY="-4594" width="128" height="148"/>
+        <element name="CDOMonthlySaleData" positionX="-8561" positionY="-5085" width="128" height="88"/>
+        <element name="CDOSaleData" positionX="-8480" positionY="-4986" width="128" height="178"/>
+        <element name="CDOUser" positionX="-8226" positionY="-4720" width="128" height="193"/>
+        <element name="CDOUserSaleData" positionX="-8298" positionY="-5050" width="128" height="180"/>
+        <element name="CDOVisitDetail" positionX="-7893" positionY="-4500" width="128" height="88"/>
+    </elements>
 </model>

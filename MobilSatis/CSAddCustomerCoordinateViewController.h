@@ -19,14 +19,17 @@
     IBOutlet UITextView *adressTextView;
     IBOutlet UILabel *kunnrLabel;
     IBOutlet UILabel *adressLabel;
-    
+    int flag;
     
 }
 
+@property int flag;
+
 - (id)initWithUser:(CSUser *)myUser andCustomer:(CSCustomer*)selectedCustomer;
 - (void)zoomToMapPoint:(CSMapPoint*)point;
-- (void)sendCoordinatesToSap;
+- (void)sendCoordinatesToGeovisionc;
 -(IBAction)ignoreKeyboard;
 - (BOOL)checkFields;
+
 
 @end
